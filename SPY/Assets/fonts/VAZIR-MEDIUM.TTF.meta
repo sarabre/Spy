@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: eb5a474f2f7e65341b61443eb9cd0c43
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Vazir
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 03ac754f955fd4a4589267c7b7bb1525, type: 3}
+  - {fileID: 12800000, guid: 6b57d352632af1140a57712b36ba0203, type: 3}
+  - {fileID: 12800000, guid: f14979d647067a34da9c3e397bca73b3, type: 3}
+  - {fileID: 12800000, guid: b66c60a4726501042a43aa5c6fee05e4, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
