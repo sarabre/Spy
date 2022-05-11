@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1274573948177256813}
   - component: {fileID: 1274573948177256812}
   - component: {fileID: 1274573948177256815}
+  - component: {fileID: 6506795608427622644}
   m_Layer: 5
   m_Name: p-word
   m_TagString: Untagged
@@ -68,12 +69,12 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 03ac754f955fd4a4589267c7b7bb1525, type: 3}
-    m_FontSize: 36
+    m_FontSize: 28
     m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 8
+    m_BestFit: 0
+    m_MinSize: 1
     m_MaxSize: 64
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -92,3 +93,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4728b011492ad4c981d2e16136bad1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6506795608427622644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274573948177256801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e798d4fb8b5aac64abdfbd4d99a80006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 0
+  FatherID: 0
+  ListID: 0

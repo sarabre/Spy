@@ -22,6 +22,7 @@ public class SingeltonManager : MonoBehaviour
 
     //pools
     public PersonalListPool personalListPool;
+    public PersonalWordPool personalWordPool;
     
 
 }

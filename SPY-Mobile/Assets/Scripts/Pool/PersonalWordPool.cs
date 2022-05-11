@@ -8,9 +8,9 @@ public class PersonalWordPool : MonoBehaviour
    
    
     public List<WordGroup> pooledObjects  = new List<WordGroup>();
-    //public WordGroup wordGroupclass = new WordGroup();
 
-    List<GameObject> lG;
+
+    [SerializeField] GameObject Field;
     [SerializeField] GameObject objectToPool;
     [SerializeField] Transform FatherObjectTransform;
     
@@ -22,13 +22,7 @@ public class PersonalWordPool : MonoBehaviour
             return SingeltonManager.Instance.personalWordsManager.WordsList;
         }
     }
-    private int amountToPool;
-
-    void Awake()
-    {
-       // p[1][0].
-      
-    }
+    
 
     public GameObject GetPooledObject()
     {
@@ -61,16 +55,26 @@ public class PersonalWordPool : MonoBehaviour
 
                 tmp = Instantiate(objectToPool);
                 tmp.transform.parent = FatherObjectTransform;
+                tmp.GetComponent<IDGenerator>().ID = i;
+                tmp.GetComponent<IDGenerator>().FatherID = j;
                 tmp.SetActive(false);
                 pooledObjects[j].wordGroup.Add(tmp);
 
 
             }
 
-            //wordGroupclass.wordGroup.Clear();
-        } 
+            
+        }
+
+        InstantiateField();
+    }
+    void InstantiateField()
+    {
+        Field.transform.parent = FatherObjectTransform;
     }
 }
+
+
 
 [Serializable] 
 public class WordGroup

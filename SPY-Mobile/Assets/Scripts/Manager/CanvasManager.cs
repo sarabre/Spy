@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] GameObject CurrentPage;
 
+    [SerializeField] GameObject PersonalWordBtnPage;
+    [SerializeField] GameObject ContentPersonalword;
     
 
     public void GotoPage(string name)
@@ -27,6 +30,18 @@ public class CanvasManager : MonoBehaviour
                 return i;       
         }
         return 0;
+    }
+
+    public void ShowPersonalWord(int index) //index list
+    {
+        ResetPersonalWordPage(index);  
+        GotoPage(PersonalWordBtnPage.name);
+    }
+    private void ResetPersonalWordPage(int index)
+    {
+        ContentPersonalword.transform.position = new Vector3(ContentPersonalword.transform.position.x, 0f,0f);
+        SingeltonManager.Instance.poolManager.DisabledAllPersonalWordsBtn();
+        SingeltonManager.Instance.poolManager.EnabledPersonalWordsBtn(index);
     }
 }
 

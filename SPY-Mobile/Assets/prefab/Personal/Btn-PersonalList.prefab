@@ -92,6 +92,8 @@ GameObject:
   - component: {fileID: 8515856119013271285}
   - component: {fileID: 8515856119013271274}
   - component: {fileID: 8515856119013271275}
+  - component: {fileID: -4116990760035379738}
+  - component: {fileID: -3370299817175120413}
   m_Layer: 5
   m_Name: Btn-PersonalList
   m_TagString: Untagged
@@ -200,7 +202,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8515856119013271285}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -4116990760035379738}
+        m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
+        m_MethodName: ChoosePersonalList
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8515856119013271275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,3 +227,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4728b011492ad4c981d2e16136bad1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4116990760035379738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8515856119013271273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909006cd7b924664496eb0e12b258523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-3370299817175120413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8515856119013271273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e798d4fb8b5aac64abdfbd4d99a80006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 0
+  FatherID: 0

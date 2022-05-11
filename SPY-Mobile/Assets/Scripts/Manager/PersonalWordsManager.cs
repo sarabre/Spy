@@ -5,6 +5,7 @@ using UnityEngine;
 public class PersonalWordsManager : MonoBehaviour
 {
     public List<ListContent> WordsList = new List<ListContent>();
+
    
     public void Awake()
     {

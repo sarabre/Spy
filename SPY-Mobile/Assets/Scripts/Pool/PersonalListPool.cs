@@ -15,21 +15,31 @@ public class PersonalListPool : MonoBehaviour
              return SingeltonManager.Instance.personalWordsManager.WordsList;
          }
      }
-     private int amountToPool ;
+     private int amountToPool
+    {
+        get
+        {
+            return SingeltonManager.Instance.personalWordsManager.WordsList.Count;
+        }
+    }
 
      void Awake()
      {
         
-         amountToPool = PersonalListWords.Count;
+       
     }
      void Start()
      {
-         pooledObjects = new List<GameObject>();
+        
+         Debug.Log(amountToPool);
+         
+        pooledObjects = new List<GameObject>();
          GameObject tmp;
          for (int i = 0; i < amountToPool; i++)
          {
              tmp = Instantiate(objectToPool);
              tmp.transform.parent = FatherObjectTransform;
+             tmp.GetComponent<IDGenerator>().ListID = i;
              tmp.SetActive(false);
              pooledObjects.Add(tmp);
          }
