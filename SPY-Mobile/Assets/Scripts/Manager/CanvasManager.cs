@@ -12,8 +12,34 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GameObject CurrentPage;
 
     [SerializeField] GameObject PersonalWordBtnPage;
-    [SerializeField] GameObject ContentPersonalword;
     
+
+    [SerializeField] ScrollRect BodyPersonalwordScroll;
+    [SerializeField] RectTransform BodyPersonalwordRect;
+    [SerializeField] RectTransform ContentPersonalword;
+    [SerializeField] GridLayoutGroup ContentPersonalwordGrid;
+
+
+    float MinHeightScrollPersonal
+    {
+        get
+        {
+             return BodyPersonalwordRect.rect.height;
+        }
+    }
+    private float CalculateContentHeight(int index)
+    {
+        
+        float height = (SingeltonManager.Instance.personalWordPool.pooledObjects[index].wordGroup.Count) * ContentPersonalwordGrid.cellSize.y;
+        
+
+        if (height < MinHeightScrollPersonal)
+            return 0;
+        else
+            return (height - MinHeightScrollPersonal*2);
+        
+    }
+
 
     public void GotoPage(string name)
     {
@@ -32,14 +58,17 @@ public class CanvasManager : MonoBehaviour
         return 0;
     }
 
-    public void ShowPersonalWord(int index) //index list
+    public void ShowPersonalWord(int index ) //index list
     {
         ResetPersonalWordPage(index);  
         GotoPage(PersonalWordBtnPage.name);
     }
     private void ResetPersonalWordPage(int index)
     {
-        ContentPersonalword.transform.position = new Vector3(ContentPersonalword.transform.position.x, 0f,0f);
+        //Reset Scroll
+        ContentPersonalword.sizeDelta = new Vector2(0, CalculateContentHeight(index));
+        BodyPersonalwordScroll.verticalNormalizedPosition =1f;
+        //create button
         SingeltonManager.Instance.poolManager.DisabledAllPersonalWordsBtn();
         SingeltonManager.Instance.poolManager.EnabledPersonalWordsBtn(index);
     }

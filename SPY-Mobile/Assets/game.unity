@@ -1429,7 +1429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &119291309
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7986,7 +7986,10 @@ MonoBehaviour:
   - Page: {fileID: 1929494901}
   CurrentPage: {fileID: 357598505}
   PersonalWordBtnPage: {fileID: 416350262}
-  ContentPersonalword: {fileID: 870594363}
+  BodyPersonalwordScroll: {fileID: 2024530706}
+  BodyPersonalwordRect: {fileID: 2024530702}
+  ContentPersonalword: {fileID: 870594364}
+  ContentPersonalwordGrid: {fileID: 870594365}
 --- !u!114 &492470207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15625,7 +15628,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.003058635, y: -0.00000059843296}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &870594365
 MonoBehaviour:
@@ -37425,8 +37428,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.061161295, y: 0.048400834}
   m_AnchorMax: {x: 0.93361294, y: 0.87600005}
-  m_AnchoredPosition: {x: 0.23913574, y: -0.5380249}
-  m_SizeDelta: {x: 0.4783, y: -1.0769997}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2024530703
 CanvasRenderer:
@@ -37494,7 +37497,7 @@ MonoBehaviour:
   m_Content: {fileID: 870594364}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 5
   m_Inertia: 1
   m_DecelerationRate: 0.135
