@@ -1,4 +1,5 @@
 using UnityEngine;
+using UPersian.Components;
 
 public class ActionManager : MonoBehaviour
 {
@@ -17,5 +18,14 @@ public class ActionManager : MonoBehaviour
     public void ChoosePersonalList()
     {
         SingeltonManager.Instance.canvasManager.ShowPersonalWord(ID);
+    }
+    public void AddWordToPersonalWords()
+    {
+        
+        SingeltonManager.Instance.canvasManager.AddWordToPersonalWords();
+    }
+    public void DeleteWordFromPersonalWord()
+    {
+        SingeltonManager.Instance.canvasManager.DeleteWordFromPersonalWord();
     }
 }

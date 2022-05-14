@@ -21,6 +21,10 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GridLayoutGroup ContentPersonalwordGrid;
     [SerializeField] RtlText TitlePersonalWord;
 
+    [SerializeField] InputField AddedWord;
+    [SerializeField] InputField DeletedWordIndex;
+
+    private int CurrentListIndex;
 
     float MinHeightScrollPersonal
     {
@@ -62,6 +66,7 @@ public class CanvasManager : MonoBehaviour
 
     public void ShowPersonalWord(int index ) //index list
     {
+        CurrentListIndex = index;
         ResetPersonalWordPage(index);  
         GotoPage(PersonalWordBtnPage.name);
     }
@@ -76,6 +81,19 @@ public class CanvasManager : MonoBehaviour
         SingeltonManager.Instance.poolManager.DisabledAllPersonalWordsBtn();
         SingeltonManager.Instance.poolManager.EnabledPersonalWordsBtn(index);
     }
+
+    public void AddWordToPersonalWords()
+    {
+        SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.Add(AddedWord.text);
+        AddedWord.text = String.Empty;   
+    }
+
+    public void DeleteWordFromPersonalWord()
+    {
+        SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.RemoveAt(int.Parse(DeletedWordIndex.text)-1);
+        DeletedWordIndex.text = String.Empty;
+    }
+
 }
 
 

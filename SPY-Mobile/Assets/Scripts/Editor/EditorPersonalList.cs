@@ -32,7 +32,7 @@ public class EditorPersonalList : EditorWindow
     Vector2 ScrollPos;
     Vector2 ScrollPosListContent;
 
-    [MenuItem("Lists/PersonalWordsEditor")]
+    [MenuItem("Spy-Mobile/PersonalWordsEditor")]
     public static void ShowWindow()
     {
         ListPersonalWords ScriptableObjLoaded = Resources.Load<ListPersonalWords>("PersonalList-SO");
