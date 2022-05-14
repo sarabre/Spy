@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using UPersian.Components;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] RectTransform BodyPersonalwordRect;
     [SerializeField] RectTransform ContentPersonalword;
     [SerializeField] GridLayoutGroup ContentPersonalwordGrid;
+    [SerializeField] RtlText TitlePersonalWord;
 
 
     float MinHeightScrollPersonal
@@ -65,6 +67,8 @@ public class CanvasManager : MonoBehaviour
     }
     private void ResetPersonalWordPage(int index)
     {
+        //change title
+        TitlePersonalWord.text = SingeltonManager.Instance.poolManager.NameWordList(index);
         //Reset Scroll
         ContentPersonalword.sizeDelta = new Vector2(0, CalculateContentHeight(index));
         BodyPersonalwordScroll.verticalNormalizedPosition =1f;

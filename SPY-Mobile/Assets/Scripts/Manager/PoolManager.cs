@@ -63,6 +63,11 @@ public class PoolManager : MonoBehaviour
         }
     }
 
+    public string NameWordList(int index)
+    {
+        return PersonalListWords[index].ListName;
+    }
+
     private void Start()
     {
         
