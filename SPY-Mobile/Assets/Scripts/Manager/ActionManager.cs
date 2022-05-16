@@ -28,4 +28,12 @@ public class ActionManager : MonoBehaviour
     {
         SingeltonManager.Instance.canvasManager.DeleteWordFromPersonalWord();
     }
+     public void NewListBtn()
+    {
+        SingeltonManager.Instance.canvasManager.NewList();
+    }
+    public void DeleteListBtn()
+    {
+        SingeltonManager.Instance.canvasManager.RemoveList();
+    }
 }

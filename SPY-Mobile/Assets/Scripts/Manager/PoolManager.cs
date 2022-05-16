@@ -36,7 +36,7 @@ public class PoolManager : MonoBehaviour
        
         for (int i = 0; i < ListPersonalListBtn.Count ; i++)
         {
-            ListPersonalListBtn[i].GetComponentInChildren<RtlText>().text = PersonalListWords[i].ListName;
+            ListPersonalListBtn[i].GetComponentInChildren<RtlText>().text = PersonalListWords[i].ListName + " : " + (i + 1).ToString();
             ListPersonalListBtn[i].SetActive(true);
         }
 
@@ -76,6 +76,14 @@ public class PoolManager : MonoBehaviour
     public void AddObject(GameObject Object,int listIndex,int index)
     {
         Object.GetComponent<RtlText>().text = PersonalListWords[listIndex].Words[index-1] + " : " + (index).ToString();
+   
+        Object.SetActive(true);
+    }
+
+    public void AddBtn(GameObject Object, int index)
+    {
+        Object.GetComponentInChildren<RtlText>().text = PersonalListWords[index-1].ListName + " : " + (index).ToString();
+        Object.GetComponent<IDGenerator>().ListID = index - 1;
         Object.SetActive(true);
     }
 
@@ -83,9 +91,18 @@ public class PoolManager : MonoBehaviour
     {
         for (int i = startPoint; i < ListPersonalWorsdBtn[ListIndex].wordGroup.Count ; i++)
         {
-            ListPersonalWorsdBtn[ListIndex].wordGroup[i].GetComponent<RtlText>().text = PersonalListWords[ListIndex].Words[i] + " : " + (i+1).ToString(); ;
+            ListPersonalWorsdBtn[ListIndex].wordGroup[i].GetComponent<RtlText>().text = PersonalListWords[ListIndex].Words[i] + " : " + (i+1).ToString();
+            ListPersonalWorsdBtn[ListIndex].wordGroup[i].GetComponent<IDGenerator>().ID = i;
         }
     }
     
+    public void UpdateListBtn(int startpoint)
+    {
+        for (int i = 0; i < ListPersonalListBtn.Count; i++)
+        {
+            ListPersonalListBtn[i].GetComponentInChildren<RtlText>().text = PersonalListWords[i].ListName + " : " + (i + 1).ToString();
+            ListPersonalListBtn[i].GetComponent<IDGenerator>().ListID = i;
+        }
+    }
 
 }

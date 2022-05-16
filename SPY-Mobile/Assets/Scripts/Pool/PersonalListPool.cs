@@ -5,7 +5,7 @@ using UnityEngine;
 public class PersonalListPool : MonoBehaviour
 {
      
-     public List<GameObject> pooledObjects;
+     public List<GameObject> pooledObjects = new List<GameObject>();
      [SerializeField] GameObject objectToPool;
      [SerializeField] Transform FatherObjectTransform;
      private List<ListContent> PersonalListWords
@@ -23,37 +23,38 @@ public class PersonalListPool : MonoBehaviour
         }
     }
 
-     void Awake()
-     {
-        
-       
-    }
      void Start()
      {
         
-        pooledObjects = new List<GameObject>();
          GameObject tmp;
          for (int i = 0; i < amountToPool; i++)
          {
              tmp = Instantiate(objectToPool);
              tmp.transform.parent = FatherObjectTransform;
-             tmp.GetComponent<IDGenerator>().ListID = i;
+             QuantifyObject(i, tmp);
              tmp.SetActive(false);
              pooledObjects.Add(tmp);
          }
      }
 
-     public GameObject GetPooledObject()
-     {
-         for (int i = 0; i < amountToPool; i++)
-
-         {
-             if (!pooledObjects[i].activeInHierarchy)
-             {
-                 return pooledObjects[i];
-             }
-         }
-         return null;
-     }
+    public void RemoveBtn(int index)
+    {
+        Destroy(pooledObjects[index]);
+        pooledObjects.RemoveAt(index);
+    }
     
+    public void AddBtn(int index)
+    {
+      
+        GameObject tmp = Instantiate(objectToPool, FatherObjectTransform);
+        QuantifyObject(index, tmp);
+        tmp.SetActive(false);
+        pooledObjects.Add(tmp);
+        SingeltonManager.Instance.poolManager.AddBtn(tmp, index);
+    }
+
+    void QuantifyObject(int index,GameObject tmp)
+    {
+        tmp.GetComponent<IDGenerator>().ListID = index;
+    }
 }

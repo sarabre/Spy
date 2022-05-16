@@ -30,9 +30,12 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] Transform AlertPlace2;
     [SerializeField] RtlText AlertText;
 
+    [SerializeField] InputField NewOrRemoveListNumber;
 
     private int CurrentListIndex;
     private float ShowAlertTimer = 1f;
+
+    private ListContent NewListContent = new ListContent();
 
     float MinHeightScrollPersonal
     {
@@ -83,11 +86,17 @@ public class CanvasManager : MonoBehaviour
         //change title
         TitlePersonalWord.text = SingeltonManager.Instance.poolManager.NameWordList(index);
         //Reset Scroll
-        ContentPersonalword.sizeDelta = new Vector2(0, CalculateContentHeight(index));
-        BodyPersonalwordScroll.verticalNormalizedPosition =1f;
+        ResetScroolSize(index);
+        BodyPersonalwordScroll.verticalNormalizedPosition = 1f;
         //create button
         SingeltonManager.Instance.poolManager.DisabledAllPersonalWordsBtn();
         SingeltonManager.Instance.poolManager.EnabledPersonalWordsBtn(index);
+    }
+
+    void ResetScroolSize(int index)
+    {
+        ContentPersonalword.sizeDelta = new Vector2(0, CalculateContentHeight(index));
+        
     }
 
     public void AddWordToPersonalWords()
@@ -95,7 +104,7 @@ public class CanvasManager : MonoBehaviour
         SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.Add(AddedWord.text);
         AddedWord.text = String.Empty;
         SingeltonManager.Instance.personalWordPool.AddObject(SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.Count, CurrentListIndex);
-
+        ResetScroolSize(CurrentListIndex);
 
     }
 
@@ -105,7 +114,7 @@ public class CanvasManager : MonoBehaviour
         {
             int RemoveIndex = int.Parse(DeletedWordIndex.text) - 1;
             SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.RemoveAt(RemoveIndex);
-            Debug.Log("RemoveIndex = " + RemoveIndex);
+            SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.RemoveAt(RemoveIndex);
             SingeltonManager.Instance.personalWordPool.RemoveObject(RemoveIndex, CurrentListIndex);
             SingeltonManager.Instance.poolManager.UpdateListIndexAfterRemove(RemoveIndex ,CurrentListIndex);
         }
@@ -128,6 +137,31 @@ public class CanvasManager : MonoBehaviour
         yield return new WaitForSeconds(4f);
         AlertBox.transform.DOMoveY(AlertPlace1.position.y, ShowAlertTimer);
     }
+
+    public void NewList()
+    {
+        NewListContent.ListName = NewOrRemoveListNumber.text;
+        SingeltonManager.Instance.personalWordsManager.WordsList.Add(NewListContent);
+        SingeltonManager.Instance.personalListPool.AddBtn(SingeltonManager.Instance.personalWordsManager.WordsList.Count);
+        NewListContent = new ListContent();
+        NewOrRemoveListNumber.text = String.Empty;
+    }
+    public void RemoveList()
+    {
+        try
+        {
+            int index = int.Parse(NewOrRemoveListNumber.text)-1;
+            SingeltonManager.Instance.personalWordsManager.WordsList.RemoveAt(index);
+            SingeltonManager.Instance.personalListPool.RemoveBtn(index);
+            SingeltonManager.Instance.poolManager.UpdateListBtn(index);
+        }
+        catch
+        {
+            ShowAlert(4002);
+        }
+            NewOrRemoveListNumber.text = String.Empty;
+    }
+
 }
 
 
