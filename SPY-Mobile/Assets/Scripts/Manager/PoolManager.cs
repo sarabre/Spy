@@ -69,9 +69,23 @@ public class PoolManager : MonoBehaviour
     }
 
     private void Start()
-    {
-        
+    {  
         EnabledPersonalListBtn();
-       
     }
+
+    public void AddObject(GameObject Object,int listIndex,int index)
+    {
+        Object.GetComponent<RtlText>().text = PersonalListWords[listIndex].Words[index-1] + " : " + (index).ToString();
+        Object.SetActive(true);
+    }
+
+    public void UpdateListIndexAfterRemove(int startPoint,int ListIndex)
+    {
+        for (int i = startPoint; i < ListPersonalWorsdBtn[ListIndex].wordGroup.Count ; i++)
+        {
+            ListPersonalWorsdBtn[ListIndex].wordGroup[i].GetComponent<RtlText>().text = PersonalListWords[ListIndex].Words[i] + " : " + (i+1).ToString(); ;
+        }
+    }
+    
+
 }

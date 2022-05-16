@@ -23,22 +23,6 @@ public class PersonalWordPool : MonoBehaviour
         }
     }
     
-
-    public GameObject GetPooledObject()
-    {
-        for (int j = 0; j < PersonalListWords.Count; j++)
-        {
-            for (int i = 0; i < PersonalListWords[j].Words.Count; i++)
-
-            {
-                if (!pooledObjects[j].wordGroup[i].activeInHierarchy)
-                {
-                    return pooledObjects[j].wordGroup[i];
-                }
-            }
-        }
-        return null;
-    }
     void Start()
     { 
         GameObject tmp;
@@ -55,8 +39,7 @@ public class PersonalWordPool : MonoBehaviour
 
                 tmp = Instantiate(objectToPool);
                 tmp.transform.parent = FatherObjectTransform;
-                tmp.GetComponent<IDGenerator>().ID = i;
-                tmp.GetComponent<IDGenerator>().FatherID = j;
+                QuantifyObject(i+1, j, tmp);
                 tmp.SetActive(false);
                 pooledObjects[j].wordGroup.Add(tmp);
 
@@ -66,11 +49,34 @@ public class PersonalWordPool : MonoBehaviour
             
         }
 
-        InstantiateField();
+        DetermineFieldParent();
+
     }
-    void InstantiateField()
+    void DetermineFieldParent()
     {
+        Field.transform.parent = FatherObjectTransform.parent;
         Field.transform.parent = FatherObjectTransform;
+    }
+
+    public void RemoveObject(int index, int listIndex)
+    {
+        Destroy(pooledObjects[listIndex].wordGroup[index]);
+        pooledObjects[listIndex].wordGroup.RemoveAt(index);
+    }
+    public void AddObject(int index, int listIndex)
+    {
+        GameObject tmp = Instantiate(objectToPool,FatherObjectTransform);
+        QuantifyObject(index, listIndex, tmp);
+        pooledObjects[listIndex].wordGroup.Add(tmp);
+        tmp.SetActive(false);
+        SingeltonManager.Instance.poolManager.AddObject(tmp, listIndex, index);
+        DetermineFieldParent();
+    }
+
+    private void QuantifyObject(int index,int fatherindex,GameObject tmp)
+    {
+        tmp.GetComponent<IDGenerator>().ID = index ;
+        tmp.GetComponent<IDGenerator>().FatherID = fatherindex;
     }
 }
 

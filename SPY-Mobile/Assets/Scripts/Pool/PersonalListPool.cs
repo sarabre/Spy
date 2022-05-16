@@ -31,8 +31,6 @@ public class PersonalListPool : MonoBehaviour
      void Start()
      {
         
-         Debug.Log(amountToPool);
-         
         pooledObjects = new List<GameObject>();
          GameObject tmp;
          for (int i = 0; i < amountToPool; i++)

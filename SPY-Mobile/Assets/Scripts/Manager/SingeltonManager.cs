@@ -7,6 +7,7 @@ public class SingeltonManager : MonoBehaviour
     public CanvasManager canvasManager;
     public PoolManager poolManager;
     public PersonalWordsManager personalWordsManager;
+    public AlertManager alertManager;
 
     private static SingeltonManager instance;
 

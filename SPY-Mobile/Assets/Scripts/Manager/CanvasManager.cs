@@ -1,10 +1,11 @@
 
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
 using UPersian.Components;
-
+using DG.Tweening;
 public class CanvasManager : MonoBehaviour
 {
 
@@ -24,7 +25,14 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] InputField AddedWord;
     [SerializeField] InputField DeletedWordIndex;
 
+    [SerializeField] GameObject AlertBox;
+    [SerializeField] Transform AlertPlace1;
+    [SerializeField] Transform AlertPlace2;
+    [SerializeField] RtlText AlertText;
+
+
     private int CurrentListIndex;
+    private float ShowAlertTimer = 1f;
 
     float MinHeightScrollPersonal
     {
@@ -85,15 +93,41 @@ public class CanvasManager : MonoBehaviour
     public void AddWordToPersonalWords()
     {
         SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.Add(AddedWord.text);
-        AddedWord.text = String.Empty;   
+        AddedWord.text = String.Empty;
+        SingeltonManager.Instance.personalWordPool.AddObject(SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.Count, CurrentListIndex);
+
+
     }
 
     public void DeleteWordFromPersonalWord()
     {
-        SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.RemoveAt(int.Parse(DeletedWordIndex.text)-1);
+        try
+        {
+            int RemoveIndex = int.Parse(DeletedWordIndex.text) - 1;
+            SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.RemoveAt(RemoveIndex);
+            Debug.Log("RemoveIndex = " + RemoveIndex);
+            SingeltonManager.Instance.personalWordPool.RemoveObject(RemoveIndex, CurrentListIndex);
+            SingeltonManager.Instance.poolManager.UpdateListIndexAfterRemove(RemoveIndex ,CurrentListIndex);
+        }
+        catch
+        {
+            ShowAlert(4001);
+        }
         DeletedWordIndex.text = String.Empty;
     }
 
+    public void ShowAlert(int code)
+    {
+        AlertText.text = SingeltonManager.Instance.alertManager.FindAlertByCode(code);   
+        StartCoroutine(AlertMovement());
+    }
+
+    IEnumerator AlertMovement()
+    {
+        AlertBox.transform.DOMoveY(AlertPlace2.position.y, ShowAlertTimer);
+        yield return new WaitForSeconds(4f);
+        AlertBox.transform.DOMoveY(AlertPlace1.position.y, ShowAlertTimer);
+    }
 }
 
 
