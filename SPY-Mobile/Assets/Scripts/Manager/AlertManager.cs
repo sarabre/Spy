@@ -5,8 +5,14 @@ using UnityEngine;
 
 public class AlertManager : MonoBehaviour
 {
-    public List<Alert> AlertList = new List<Alert>();
+    private List<Alert> AlertList = new List<Alert>();
 
+    public List<Alert> alertlist
+    {
+        get{
+            return AlertList;
+        }
+    }
 
     public void Awake()
     {
@@ -19,10 +25,10 @@ public class AlertManager : MonoBehaviour
 
     public string FindAlertByCode(int code)
     {
-        for (int i = 0; i < AlertList.Count; i++)
+        for (int i = 0; i < alertlist.Count; i++)
         {
-            if (code == AlertList[i].code)
-                return AlertList[i].massage;
+            if (code == alertlist[i].code)
+                return alertlist[i].massage;
                 
         }
         return "error ";

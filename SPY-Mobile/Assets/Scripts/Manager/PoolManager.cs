@@ -6,7 +6,7 @@ using System;
 
 public class PoolManager : MonoBehaviour
 {
-    List<GameObject> ListPersonalListBtn
+    private List<GameObject> PersonalListBtn
     {
         get
         {
@@ -14,7 +14,7 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-    List<WordGroup> ListPersonalWorsdBtn
+    private List<WordGroup> PersonalWorsdBtn
     {
         get
         {
@@ -22,87 +22,80 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-    private List<ListContent> PersonalListWords
+    private List<ListContent> PersonalWords
     {
         get
         {
-            return SingeltonManager.Instance.personalWordsManager.WordsList;
+            return SingeltonManager.Instance.personalWordsManager.wordlist;
         }
     }
 
 
-    void EnabledPersonalListBtn()
+    public void EnabledListBtn()
     {
        
-        for (int i = 0; i < ListPersonalListBtn.Count ; i++)
+        for (int i = 0; i < PersonalWords.Count ; i++)
         {
-            ListPersonalListBtn[i].GetComponentInChildren<RtlText>().text = PersonalListWords[i].ListName + " : " + (i + 1).ToString();
-            ListPersonalListBtn[i].SetActive(true);
+            PersonalListBtn[i].GetComponentInChildren<RtlText>().text = PersonalWords[i].ListName + " : " + (i + 1).ToString();
+            PersonalListBtn[i].SetActive(true);
         }
 
        
     }
+
     public void EnabledPersonalWordsBtn(int index)
     {
        
-        for (int i = 0; i < ListPersonalWorsdBtn[index].wordGroup.Count ; i++)
+        for (int i = 0; i < PersonalWords[index].Words.Count ; i++)
         {
-            ListPersonalWorsdBtn[index].wordGroup[i].GetComponentInChildren<RtlText>().text = PersonalListWords[index].Words[i] +" : " + (i + 1).ToString() ;
-            ListPersonalWorsdBtn[index].wordGroup[i].SetActive(true);
+            PersonalWorsdBtn[index].wordGroup[i].GetComponentInChildren<RtlText>().text = PersonalWords[index].Words[i] +" : " + (i + 1).ToString() ;
+            PersonalWorsdBtn[index].wordGroup[i].SetActive(true);
 
         }
     }
-     public void DisabledAllPersonalWordsBtn()
+
+    public void DisabledAllPersonalWordsBtn()
     {
-        for (int i = 0; i < ListPersonalWorsdBtn.Count; i++)
+        for (int i = 0; i < PersonalWords.Count; i++)
         {
-            for (int j = 0; j < ListPersonalWorsdBtn[i].wordGroup.Count ; j++)
+            for (int j = 0; j < PersonalWords[i].Words.Count ; j++)
             {
-                ListPersonalWorsdBtn[i].wordGroup[j].SetActive(false);
+                PersonalWorsdBtn[i].wordGroup[j].SetActive(false);
             }
         }
     }
 
+    public void DisabledListBtn()
+    {
+        for (int i = 0; i < PersonalListBtn.Count; i++)
+        {
+            PersonalListBtn[i].SetActive(false);
+        }
+    }
+
+
     public string NameWordList(int index)
     {
-        return PersonalListWords[index].ListName;
+        return PersonalWords[index].ListName;
     }
 
-    private void Start()
-    {  
-        EnabledPersonalListBtn();
-    }
-
-    public void AddObject(GameObject Object,int listIndex,int index)
+  
+    public void UpdateList()
     {
-        Object.GetComponent<RtlText>().text = PersonalListWords[listIndex].Words[index-1] + " : " + (index).ToString();
+        //disable all
+        DisabledListBtn();
+        //enable currect
+        EnabledListBtn();
+    }
+
+    public void UpdateWords(int index)
+    {
+        //disable all
+        DisabledAllPersonalWordsBtn();
+        //enable currect
+        EnabledPersonalWordsBtn(index);
+    }
+
    
-        Object.SetActive(true);
-    }
-
-    public void AddBtn(GameObject Object, int index)
-    {
-        Object.GetComponentInChildren<RtlText>().text = PersonalListWords[index-1].ListName + " : " + (index).ToString();
-        Object.GetComponent<IDGenerator>().ListID = index - 1;
-        Object.SetActive(true);
-    }
-
-    public void UpdateListIndexAfterRemove(int startPoint,int ListIndex)
-    {
-        for (int i = startPoint; i < ListPersonalWorsdBtn[ListIndex].wordGroup.Count ; i++)
-        {
-            ListPersonalWorsdBtn[ListIndex].wordGroup[i].GetComponent<RtlText>().text = PersonalListWords[ListIndex].Words[i] + " : " + (i+1).ToString();
-            ListPersonalWorsdBtn[ListIndex].wordGroup[i].GetComponent<IDGenerator>().ID = i;
-        }
-    }
-    
-    public void UpdateListBtn(int startpoint)
-    {
-        for (int i = 0; i < ListPersonalListBtn.Count; i++)
-        {
-            ListPersonalListBtn[i].GetComponentInChildren<RtlText>().text = PersonalListWords[i].ListName + " : " + (i + 1).ToString();
-            ListPersonalListBtn[i].GetComponent<IDGenerator>().ListID = i;
-        }
-    }
 
 }

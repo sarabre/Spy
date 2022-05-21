@@ -15,25 +15,28 @@ public class ActionManager : MonoBehaviour
     {
         SingeltonManager.Instance.canvasManager.GotoPage(Page.name);
     }
+    public void ShowPersonalBtn()
+    {
+        SingeltonManager.Instance.canvasManager.ShowPersonalBtn();
+    }
     public void ChoosePersonalList()
     {
         SingeltonManager.Instance.canvasManager.ShowPersonalWord(ID);
     }
     public void AddWordToPersonalWords()
     {
-        
-        SingeltonManager.Instance.canvasManager.AddWordToPersonalWords();
+        SingeltonManager.Instance.canvasManager.NewPersonalWord();
     }
     public void DeleteWordFromPersonalWord()
     {
-        SingeltonManager.Instance.canvasManager.DeleteWordFromPersonalWord();
+        SingeltonManager.Instance.canvasManager.RemovePersonalWord();
     }
      public void NewListBtn()
     {
-        SingeltonManager.Instance.canvasManager.NewList();
+        SingeltonManager.Instance.canvasManager.NewPersonalList();
     }
     public void DeleteListBtn()
     {
-        SingeltonManager.Instance.canvasManager.RemoveList();
+       SingeltonManager.Instance.canvasManager.RemovePersonalList();
     }
 }

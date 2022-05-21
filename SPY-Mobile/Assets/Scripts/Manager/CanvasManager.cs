@@ -17,9 +17,13 @@ public class CanvasManager : MonoBehaviour
     
 
     [SerializeField] ScrollRect BodyPersonalwordScroll;
+    [SerializeField] ScrollRect BodyPersonalBtnScroll;
     [SerializeField] RectTransform BodyPersonalwordRect;
+    [SerializeField] RectTransform BodyPersonalBtnRect;
     [SerializeField] RectTransform ContentPersonalword;
+    [SerializeField] RectTransform ContentPersonalBTN;
     [SerializeField] GridLayoutGroup ContentPersonalwordGrid;
+    [SerializeField] GridLayoutGroup ContentPersonaBtnGrid;
     [SerializeField] RtlText TitlePersonalWord;
 
     [SerializeField] InputField AddedWord;
@@ -34,29 +38,54 @@ public class CanvasManager : MonoBehaviour
 
     private int CurrentListIndex;
     private float ShowAlertTimer = 1f;
+    private float NormalPositionScroll = 10;
 
     private ListContent NewListContent = new ListContent();
 
-    float MinHeightScrollPersonal
+    float MinHeightScrollPersonalWord
     {
         get
         {
              return BodyPersonalwordRect.rect.height;
         }
     }
-    private float CalculateContentHeight(int index)
-    {
-        
-        float height = (SingeltonManager.Instance.personalWordPool.pooledObjects[index].wordGroup.Count) * ContentPersonalwordGrid.cellSize.y;
-        
 
-        if (height < MinHeightScrollPersonal)
-            return 0;
+    float MinHeightScrollPersonalBtn
+    {
+        get
+        {
+            return BodyPersonalBtnRect.rect.height;
+        }
+    }
+    private float CalculateContentHeight(int index,bool IsListBtn)
+    {
+        if (IsListBtn)
+        {
+            float height = (SingeltonManager.Instance.personalWordsManager.wordlist.Count ) * ContentPersonaBtnGrid.cellSize.y;
+
+
+            if (height < MinHeightScrollPersonalBtn)
+                return 0;
+            else
+                return (height - MinHeightScrollPersonalBtn * 2 + 35f); // 35 for reduce Numerical error
+
+
+        }
         else
-            return (height - MinHeightScrollPersonal*2);
+        {
+            float height = (SingeltonManager.Instance.personalWordsManager.wordlist[index].Words.Count) * ContentPersonalwordGrid.cellSize.y;
+
+            Debug.Log(height);
+            Debug.Log("MinHeightScrollPersonalWord  = " + MinHeightScrollPersonalWord);
+
+            if (height < MinHeightScrollPersonalWord)
+                return 0;
+            else
+                return (height - MinHeightScrollPersonalWord * 1.7f);
+        }
+       
         
     }
-
 
     public void GotoPage(string name)
     {
@@ -75,54 +104,31 @@ public class CanvasManager : MonoBehaviour
         return 0;
     }
 
-    public void ShowPersonalWord(int index ) //index list
+    public void ShowPersonalBtn() 
+    {
+        #region Update list
+        SingeltonManager.Instance.poolManager.UpdateList();
+
+        #endregion
+
+        #region Update scroll
+
+        BodyPersonalBtnScroll.verticalNormalizedPosition = NormalPositionScroll;
+        ResetScroolSize(0, ContentPersonalBTN, true);
+        #endregion
+    }
+    public void ShowPersonalWord(int index ) //index list that the page show from Wordlist
     {
         CurrentListIndex = index;
-        ResetPersonalWordPage(index);  
+        SingeltonManager.Instance.poolManager.UpdateWords(CurrentListIndex);
+        TitlePersonalWord.text = SingeltonManager.Instance.poolManager.NameWordList(index);
+        ResetScroolSize(CurrentListIndex, ContentPersonalword, false);
         GotoPage(PersonalWordBtnPage.name);
     }
-    private void ResetPersonalWordPage(int index)
+   
+    void ResetScroolSize(int index,RectTransform ScrollContent,bool IsList)
     {
-        //change title
-        TitlePersonalWord.text = SingeltonManager.Instance.poolManager.NameWordList(index);
-        //Reset Scroll
-        ResetScroolSize(index);
-        BodyPersonalwordScroll.verticalNormalizedPosition = 1f;
-        //create button
-        SingeltonManager.Instance.poolManager.DisabledAllPersonalWordsBtn();
-        SingeltonManager.Instance.poolManager.EnabledPersonalWordsBtn(index);
-    }
-
-    void ResetScroolSize(int index)
-    {
-        ContentPersonalword.sizeDelta = new Vector2(0, CalculateContentHeight(index));
-        
-    }
-
-    public void AddWordToPersonalWords()
-    {
-        SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.Add(AddedWord.text);
-        AddedWord.text = String.Empty;
-        SingeltonManager.Instance.personalWordPool.AddObject(SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.Count, CurrentListIndex);
-        ResetScroolSize(CurrentListIndex);
-
-    }
-
-    public void DeleteWordFromPersonalWord()
-    {
-        try
-        {
-            int RemoveIndex = int.Parse(DeletedWordIndex.text) - 1;
-            SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.RemoveAt(RemoveIndex);
-            SingeltonManager.Instance.personalWordsManager.WordsList[CurrentListIndex].Words.RemoveAt(RemoveIndex);
-            SingeltonManager.Instance.personalWordPool.RemoveObject(RemoveIndex, CurrentListIndex);
-            SingeltonManager.Instance.poolManager.UpdateListIndexAfterRemove(RemoveIndex ,CurrentListIndex);
-        }
-        catch
-        {
-            ShowAlert(4001);
-        }
-        DeletedWordIndex.text = String.Empty;
+        ScrollContent.sizeDelta = new Vector2(0, CalculateContentHeight(index,IsList));
     }
 
     public void ShowAlert(int code)
@@ -138,30 +144,130 @@ public class CanvasManager : MonoBehaviour
         AlertBox.transform.DOMoveY(AlertPlace1.position.y, ShowAlertTimer);
     }
 
-    public void NewList()
+    public void MakeInputEmpty(InputField input)
     {
-        NewListContent.ListName = NewOrRemoveListNumber.text;
-        SingeltonManager.Instance.personalWordsManager.WordsList.Add(NewListContent);
-        SingeltonManager.Instance.personalListPool.AddBtn(SingeltonManager.Instance.personalWordsManager.WordsList.Count);
-        NewListContent = new ListContent();
-        NewOrRemoveListNumber.text = String.Empty;
+        input.text = String.Empty;
     }
-    public void RemoveList()
+
+    
+    public void NewPersonalWord()
     {
+        #region Call Manager
+
+        SingeltonManager.Instance.personalWordsManager.AddWord(CurrentListIndex ,AddedWord.text);
+
+        #endregion
+
+        #region Update list
+
+        SingeltonManager.Instance.poolManager.UpdateWords(CurrentListIndex);
+        MakeInputEmpty(AddedWord);
+
+        #endregion
+
+        #region Update scroll and page
+
+        BodyPersonalwordScroll.verticalNormalizedPosition = NormalPositionScroll;
+        ResetScroolSize(CurrentListIndex, ContentPersonalword, false);
+
+        #endregion
+    }
+
+    public void NewPersonalList()
+    {
+        #region Call manager
+        if ( SingeltonManager.Instance.personalWordsManager.wordlist.Count <= 12 ) 
+        {
+            if(NewOrRemoveListNumber.text != String.Empty)
+            SingeltonManager.Instance.personalWordsManager.AddGroup(NewOrRemoveListNumber.text);
+            else
+            {
+                ShowAlert(4003); // error for emphty name
+                return;
+                
+            }
+        }
+        else
+        {
+            ShowAlert(4002); // error for more than 12
+            return;
+        }
+        #endregion
+
+        #region Update list
+        SingeltonManager.Instance.poolManager.UpdateList();
+        MakeInputEmpty(NewOrRemoveListNumber);
+        #endregion
+
+        #region Update scroll
+
+        BodyPersonalBtnScroll.verticalNormalizedPosition = NormalPositionScroll;
+        ResetScroolSize(0, ContentPersonalBTN, true);
+        #endregion
+    }
+
+    public void RemovePersonalList()
+    {
+        #region Call manager
+        
         try
         {
-            int index = int.Parse(NewOrRemoveListNumber.text)-1;
-            SingeltonManager.Instance.personalWordsManager.WordsList.RemoveAt(index);
-            SingeltonManager.Instance.personalListPool.RemoveBtn(index);
-            SingeltonManager.Instance.poolManager.UpdateListBtn(index);
+            if (NewOrRemoveListNumber.text != String.Empty)
+                SingeltonManager.Instance.personalWordsManager.RemoveGroup(int.Parse(NewOrRemoveListNumber.text)-1);
+            else
+            {
+                ShowAlert(4004); // error for emphty name
+                return;
+
+            }
         }
         catch
         {
-            ShowAlert(4002);
+            ShowAlert(4001); // no this number in list
+            return;
         }
-            NewOrRemoveListNumber.text = String.Empty;
+        #endregion
+
+        #region Update list
+        SingeltonManager.Instance.poolManager.UpdateList();
+        MakeInputEmpty(NewOrRemoveListNumber);
+        #endregion
+
+        #region Update scroll
+
+        BodyPersonalBtnScroll.verticalNormalizedPosition = NormalPositionScroll;
+        ResetScroolSize(0, ContentPersonalBTN, true);
+        #endregion
     }
 
+    public void RemovePersonalWord()
+    {
+        #region Call Manager
+        try
+        {
+           SingeltonManager.Instance.personalWordsManager.RemoveWord(CurrentListIndex, int.Parse(DeletedWordIndex.text)-1);
+        }
+        catch
+        {
+            ShowAlert(4001); // no this number in list
+        }
+
+        #endregion
+
+        #region Update list
+
+        SingeltonManager.Instance.poolManager.UpdateWords(CurrentListIndex);
+        MakeInputEmpty(DeletedWordIndex);
+
+        #endregion
+
+        #region Update scroll and page
+
+        BodyPersonalwordScroll.verticalNormalizedPosition = NormalPositionScroll;
+        ResetScroolSize(CurrentListIndex, ContentPersonalword, false);
+
+        #endregion
+    }
 }
 
 

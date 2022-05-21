@@ -19,27 +19,43 @@ public class PersonalWordPool : MonoBehaviour
     {
         get
         {
-            return SingeltonManager.Instance.personalWordsManager.WordsList;
+            return SingeltonManager.Instance.personalWordsManager.wordlist;
         }
     }
-    
+
+    private int amountToPoolChild
+    {
+        get
+        {
+            return SingeltonManager.Instance.personalWordsManager.WordCount;
+        }
+    }
+
+    private int amountToPool
+    {
+        get
+        {
+            return SingeltonManager.Instance.personalWordsManager.BtnCount;
+        }
+    }
+
     void Start()
     { 
         GameObject tmp;
 
-        for (int j = 0; j < PersonalListWords.Count; j++)
+        for (int j = 0; j < amountToPool; j++)
         {
 
             WordGroup wordGroupclass = new WordGroup();
         
             pooledObjects.Add(wordGroupclass);
 
-            for (int i = 0; i < PersonalListWords[j].Words.Count; i++)
+            for (int i = 0; i < amountToPoolChild; i++)
             {
 
                 tmp = Instantiate(objectToPool);
                 tmp.transform.parent = FatherObjectTransform;
-                QuantifyObject(i+1, j, tmp);
+                QuantifyObject(i, j, tmp);
                 tmp.SetActive(false);
                 pooledObjects[j].wordGroup.Add(tmp);
 
@@ -58,20 +74,6 @@ public class PersonalWordPool : MonoBehaviour
         Field.transform.parent = FatherObjectTransform;
     }
 
-    public void RemoveObject(int index, int listIndex)
-    {
-        Destroy(pooledObjects[listIndex].wordGroup[index]);
-        pooledObjects[listIndex].wordGroup.RemoveAt(index);
-    }
-    public void AddObject(int index, int listIndex)
-    {
-        GameObject tmp = Instantiate(objectToPool,FatherObjectTransform);
-        QuantifyObject(index, listIndex, tmp);
-        pooledObjects[listIndex].wordGroup.Add(tmp);
-        tmp.SetActive(false);
-        SingeltonManager.Instance.poolManager.AddObject(tmp, listIndex, index);
-        DetermineFieldParent();
-    }
 
     private void QuantifyObject(int index,int fatherindex,GameObject tmp)
     {

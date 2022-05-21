@@ -2265,7 +2265,7 @@ MonoBehaviour:
     m_Right: 40
     m_Top: 20
     m_Bottom: 20
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 150}
@@ -5439,6 +5439,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 329213328}
+        m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
+        m_MethodName: ShowPersonalBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &329213326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8284,9 +8296,13 @@ MonoBehaviour:
   CurrentPage: {fileID: 357598505}
   PersonalWordBtnPage: {fileID: 416350262}
   BodyPersonalwordScroll: {fileID: 2024530706}
+  BodyPersonalBtnScroll: {fileID: 624094207}
   BodyPersonalwordRect: {fileID: 2024530702}
+  BodyPersonalBtnRect: {fileID: 624094203}
   ContentPersonalword: {fileID: 870594364}
+  ContentPersonalBTN: {fileID: 137052356}
   ContentPersonalwordGrid: {fileID: 870594365}
+  ContentPersonaBtnGrid: {fileID: 137052357}
   TitlePersonalWord: {fileID: 554162805}
   AddedWord: {fileID: 1204941809}
   DeletedWordIndex: {fileID: 1200260887}
@@ -8340,7 +8356,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39241b1baf487fc43a44c4b4f25c259e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordsList: []
+  BtnCount: 12
+  WordCount: 60
 --- !u!114 &492470210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8365,7 +8382,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65d6a0b88a903a442925fc0d08ab6abf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AlertList: []
 --- !u!1 &496937527
 GameObject:
   m_ObjectHideFlags: 0
@@ -12583,7 +12599,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &707563895
 RectTransform:
   m_ObjectHideFlags: 0
