@@ -36,6 +36,8 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] InputField NewOrRemoveListNumber;
 
+    [SerializeField] RtlText PersonalListBtnDetail;
+
     private int CurrentListIndex;
     private float ShowAlertTimer = 1f;
     private float NormalPositionScroll = 10;
@@ -61,13 +63,15 @@ public class CanvasManager : MonoBehaviour
     {
         if (IsListBtn)
         {
-            float height = (SingeltonManager.Instance.personalWordsManager.wordlist.Count ) * ContentPersonaBtnGrid.cellSize.y;
+            float height = Convert.ToInt32(SingeltonManager.Instance.personalWordsManager.wordlist.Count/2 ) * ContentPersonaBtnGrid.cellSize.y;
 
+            Debug.Log(height);
+            Debug.Log("MinHeightScrollPersonalBtn  = " + MinHeightScrollPersonalBtn);
 
             if (height < MinHeightScrollPersonalBtn)
                 return 0;
             else
-                return (height - MinHeightScrollPersonalBtn * 2 + 35f); // 35 for reduce Numerical error
+                return (height - MinHeightScrollPersonalBtn + ContentPersonaBtnGrid.cellSize.y * 2.5f); // for reduce Numerical error
 
 
         }
@@ -149,6 +153,32 @@ public class CanvasManager : MonoBehaviour
         input.text = String.Empty;
     }
 
+    public void ShowWordsList()
+    {
+        try
+        {
+            switch (SingeltonManager.Instance.personalWordsManager.wordlist.Count)
+            {
+                case 0:
+                    PersonalListBtnDetail.text = " ";
+                    break;
+                case 1:
+                    PersonalListBtnDetail.text = $"{SingeltonManager.Instance.personalWordsManager.wordlist[0].ListName} ";
+                    break;
+                case 2:
+                    PersonalListBtnDetail.text = $"{SingeltonManager.Instance.personalWordsManager.wordlist[0].ListName} , {SingeltonManager.Instance.personalWordsManager.wordlist[1].ListName} ";
+                    break;
+                default:
+                    PersonalListBtnDetail.text = $"{SingeltonManager.Instance.personalWordsManager.wordlist[0].ListName} , {SingeltonManager.Instance.personalWordsManager.wordlist[1].ListName} , {SingeltonManager.Instance.personalWordsManager.wordlist[2].ListName} , ...";
+                    break;
+            }
+       
+        }
+        catch
+        {
+
+        }
+    }
     
     public void NewPersonalWord()
     {
@@ -176,7 +206,7 @@ public class CanvasManager : MonoBehaviour
     public void NewPersonalList()
     {
         #region Call manager
-        if ( SingeltonManager.Instance.personalWordsManager.wordlist.Count <= 12 ) 
+        if ( SingeltonManager.Instance.personalWordsManager.wordlist.Count < 12 ) 
         {
             if(NewOrRemoveListNumber.text != String.Empty)
             SingeltonManager.Instance.personalWordsManager.AddGroup(NewOrRemoveListNumber.text);

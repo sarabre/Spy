@@ -56,9 +56,10 @@ public class PoolManager : MonoBehaviour
 
     public void DisabledAllPersonalWordsBtn()
     {
-        for (int i = 0; i < PersonalWords.Count; i++)
+        Debug.Log(PersonalWorsdBtn.Count);
+        for (int i = 0; i < PersonalWorsdBtn.Count; i++)
         {
-            for (int j = 0; j < PersonalWords[i].Words.Count ; j++)
+            for (int j = 0; j < PersonalWorsdBtn[i].wordGroup.Count ; j++)
             {
                 PersonalWorsdBtn[i].wordGroup[j].SetActive(false);
             }

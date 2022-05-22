@@ -39,4 +39,9 @@ public class ActionManager : MonoBehaviour
     {
        SingeltonManager.Instance.canvasManager.RemovePersonalList();
     }
+
+    public void ShowWordsList()
+    {
+        SingeltonManager.Instance.canvasManager.ShowWordsList();
+    }
 }

@@ -43,6 +43,7 @@ public class PersonalWordsManager : MonoBehaviour
     
     public void AddGroup(string name)
     {
+        listContentForNewGroup = new ListContent();
         listContentForNewGroup.ListName = name;
         WordsList.Add(listContentForNewGroup);
     }
