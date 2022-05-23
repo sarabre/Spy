@@ -8,6 +8,7 @@ public class SingeltonManager : MonoBehaviour
     public PoolManager poolManager;
     public PersonalWordsManager personalWordsManager;
     public AlertManager alertManager;
+    public PublicWordsManager publicWordsManager;
 
     private static SingeltonManager instance;
 
@@ -24,6 +25,7 @@ public class SingeltonManager : MonoBehaviour
     //pools
     public PersonalListPool personalListPool;
     public PersonalWordPool personalWordPool;
-    
 
+    //controler
+    public WordGroupControler wordGroupControler;
 }

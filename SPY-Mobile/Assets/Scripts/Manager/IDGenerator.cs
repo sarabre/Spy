@@ -8,4 +8,5 @@ public class IDGenerator : MonoBehaviour
     public int ID;
     public int FatherID;
     public int ListID;
+    public bool IsPublic;
 }
