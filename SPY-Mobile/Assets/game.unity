@@ -3412,6 +3412,7 @@ GameObject:
   - component: {fileID: 208758309}
   - component: {fileID: 208758310}
   - component: {fileID: 208758311}
+  - component: {fileID: 208758312}
   m_Layer: 0
   m_Name: Pools
   m_TagString: Untagged
@@ -3479,6 +3480,21 @@ MonoBehaviour:
   pooledObjects: []
   objectToPool: {fileID: 5388085057575920063, guid: 428b78327f521da4e84b53e05809f04e, type: 3}
   FatherObjectTransform: {fileID: 141716392}
+--- !u!114 &208758312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208758307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1492efdbb4f9284a9dfeab2b83d98bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pooledObjects: []
+  objectToPool: {fileID: 2702121981639814146, guid: efbbe836314e5244fa0baf77b4dcd15d, type: 3}
+  FatherObjectTransform: {fileID: 1164358274}
 --- !u!1 &209045429
 GameObject:
   m_ObjectHideFlags: 0
