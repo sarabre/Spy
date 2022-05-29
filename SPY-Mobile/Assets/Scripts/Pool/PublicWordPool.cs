@@ -46,7 +46,7 @@ public class PublicWordPool : MonoBehaviour
             {
 
                 tmp = Instantiate(objectToPool);
-                tmp.transform.parent = FatherObjectTransform;
+                tmp.transform.SetParent(FatherObjectTransform);
                 QuantifyObject(i, j, tmp);
                 tmp.SetActive(false);
                 pooledObjects[j].wordGroup.Add(tmp);

@@ -10,16 +10,30 @@ using UnityEngine.Networking;
 public class WordGroupControler : MonoBehaviour
 {
     private string secretKey = "2003";
-    public string addScoreURL =
-            "http://localhost/HighScoreGame/addscore.php?";
-    public string GetTableURL =
-             "http://localhost/Spy/GetTables.php?";
+    //public string addScoreURL =
+           // "http://localhost/HighScoreGame/addscore.php?";
 
-    public List<TableDetail> Tables = new List<TableDetail>();
+    public string GetTableURL = "http://localhost/Spy/GetTables.php?";
+    public string GetTableWordsURL = "http://localhost/Spy/GetTableWords.php?";
+
+
+
+
+    public List<TableDetail> TablesName = new List<TableDetail>();
     public TableDetail tableDetail = new TableDetail();
 
+    public List<Table> Tables = new List<Table>();
+    public Table table = new Table();
+    public WordDetail wordDetail = new WordDetail();
+
+
+
     int CountLoopGetTable;
-    int j = 0;
+    int CountLoopGetTableWord;
+    int WordCount;
+    int CountForCheckingIf = 0;
+
+    string code;
 
     public void Start()
     {
@@ -31,6 +45,7 @@ public class WordGroupControler : MonoBehaviour
        // nameResultText.text = "Player: \n \n";
        // scoreResultText.text = "Score: \n \n";
         StartCoroutine(GetTable());
+       
     }
     public void SendScoreBtn()
     {
@@ -61,47 +76,93 @@ public class WordGroupControler : MonoBehaviour
                 for (int i = 1; i <= mc.Count; i++)
                 {
                     
-                    if (j == 2)
+                    if (CountForCheckingIf == 2)
                     {
-             
-                        Tables[CountLoopGetTable].NameCode = splitData[i-1];
-                        j = 0;
+
+                        TablesName[CountLoopGetTable].NameCode = splitData[i-1];
+                        CountForCheckingIf = 0;
                         CountLoopGetTable++;
                         tableDetail = new TableDetail();
                     }
-                    else if (j == 1)
+                    else if (CountForCheckingIf == 1)
                     {
-                        
-                        Tables[CountLoopGetTable].Name = splitData[i-1].faConvert();
-                        j = 2;
+
+                        TablesName[CountLoopGetTable].Name = splitData[i-1].faConvert();
+                        CountForCheckingIf = 2;
                     }
                     else
                     {
-                        Tables.Add(tableDetail);
-                        Tables[CountLoopGetTable].ID = int.Parse(splitData[i-1]);
-                        j = 1;
+                        TablesName.Add(tableDetail);
+                        TablesName[CountLoopGetTable].ID = int.Parse(splitData[i-1]);
+                        CountForCheckingIf = 1;
                     }
                     
                 }
             }
         }
+
+
+        StartCoroutine(GetWords());
+
     }
 
-    IEnumerator PostScores(string name, int score)
+    IEnumerator GetWords()
     {
+        //Tables.Add(table);
+        for (int j = 0; j < TablesName.Count; j++)
+        {
+            code = TablesName[j].NameCode;
+             wordDetail = new WordDetail();
 
-        string hash = HashInput(name + score + secretKey);
-        string post_url = addScoreURL + "name=" +
-               UnityWebRequest.EscapeURL(name) + "&score="
-               + score + "&hash=" + hash;
+            UnityWebRequest hs_get = UnityWebRequest.Get(GetTableWordsURL + "Code=" + code + "");
+            yield return hs_get.SendWebRequest();
 
-        UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
+            if (hs_get.error != null)
+                Debug.Log("There was an error getting the high score: " + hs_get.error);
+            else
+            {
+                string dataText = hs_get.downloadHandler.text;
+                MatchCollection mc = Regex.Matches(dataText, @"_");
+                if (mc.Count > 0)
+                {
+                    Tables.Add(table);
+                    
+                   
 
-        yield return hs_post.SendWebRequest();
-        if (hs_post.error != null)
-            Debug.Log("There was an error posting the high score: "
-                    + hs_post.error);
+                    Debug.Log("Count  =  " + CountLoopGetTableWord);
+
+                    string[] splitData = Regex.Split(dataText, @"_");
+                    for (int i = 0; i < mc.Count; i++)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            Tables[CountLoopGetTableWord].TableNameCode = code;
+                            
+                            Tables[CountLoopGetTableWord].Word.Add(wordDetail);
+                            Tables[CountLoopGetTableWord].Word[WordCount].ID = int.Parse(splitData[i]);
+                            
+
+                        }
+                        else
+                        {
+                            Tables[CountLoopGetTableWord].Word[WordCount].Word = splitData[i].faConvert();
+                            wordDetail = new WordDetail();
+                            WordCount++;
+                        }
+                    }
+
+                    WordCount = 0;
+                    CountLoopGetTableWord++;
+                    table = new Table();
+
+                }
+            }
+
+        }
+
     }
+
+    
 
     public string HashInput(string input)
     {

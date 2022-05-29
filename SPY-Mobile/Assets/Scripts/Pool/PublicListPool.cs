@@ -23,7 +23,7 @@ public class PublicListPool : MonoBehaviour
         for (int i = 0; i < amountToPool; i++)
         {
             tmp = Instantiate(objectToPool);
-            tmp.transform.parent = FatherObjectTransform;
+            tmp.transform.SetParent(FatherObjectTransform);
             QuantifyObject(i, tmp);
             tmp.SetActive(false);
             pooledObjects.Add(tmp);
