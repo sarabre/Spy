@@ -70,8 +70,8 @@ public class PersonalWordPool : MonoBehaviour
     }
     void DetermineFieldParent()
     {
-        Field.transform.parent = FatherObjectTransform.parent;
-        Field.transform.parent = FatherObjectTransform;
+        Field.transform.SetParent(FatherObjectTransform.parent);
+        Field.transform.SetParent(FatherObjectTransform);
     }
 
 

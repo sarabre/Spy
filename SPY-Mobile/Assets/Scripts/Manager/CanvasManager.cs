@@ -14,6 +14,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GameObject CurrentPage;
 
     [SerializeField] GameObject PersonalWordBtnPage;
+    [SerializeField] GameObject PublicWordBtnPage;
     
 
     [SerializeField] ScrollRect BodyPersonalwordScroll;
@@ -38,7 +39,7 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] RtlText PersonalListBtnDetail;
 
-    private int CurrentListIndex;
+    private int CurrentPersonalListIndex;
     private float ShowAlertTimer = 1f;
     private float NormalPositionScroll = 10;
 
@@ -111,7 +112,7 @@ public class CanvasManager : MonoBehaviour
     public void ShowPersonalBtn() 
     {
         #region Update list
-        SingeltonManager.Instance.poolManager.UpdateList();
+        SingeltonManager.Instance.poolManager.UpdatePersonalList();
 
         #endregion
 
@@ -123,10 +124,10 @@ public class CanvasManager : MonoBehaviour
     }
     public void ShowPersonalWord(int index ) //index list that the page show from Wordlist
     {
-        CurrentListIndex = index;
-        SingeltonManager.Instance.poolManager.UpdateWords(CurrentListIndex);
-        TitlePersonalWord.text = SingeltonManager.Instance.poolManager.NameWordList(index);
-        ResetScroolSize(CurrentListIndex, ContentPersonalword, false);
+        CurrentPersonalListIndex = index;
+        SingeltonManager.Instance.poolManager.UpdatePersonalWords(CurrentPersonalListIndex);
+        TitlePersonalWord.text = SingeltonManager.Instance.poolManager.NamePersonalWordList(index);
+        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false);
         GotoPage(PersonalWordBtnPage.name);
     }
    
@@ -184,13 +185,13 @@ public class CanvasManager : MonoBehaviour
     {
         #region Call Manager
 
-        SingeltonManager.Instance.personalWordsManager.AddWord(CurrentListIndex ,AddedWord.text);
+        SingeltonManager.Instance.personalWordsManager.AddWord(CurrentPersonalListIndex ,AddedWord.text);
 
         #endregion
 
         #region Update list
 
-        SingeltonManager.Instance.poolManager.UpdateWords(CurrentListIndex);
+        SingeltonManager.Instance.poolManager.UpdatePersonalWords(CurrentPersonalListIndex);
         MakeInputEmpty(AddedWord);
 
         #endregion
@@ -198,7 +199,7 @@ public class CanvasManager : MonoBehaviour
         #region Update scroll and page
 
         BodyPersonalwordScroll.verticalNormalizedPosition = NormalPositionScroll;
-        ResetScroolSize(CurrentListIndex, ContentPersonalword, false);
+        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false);
 
         #endregion
     }
@@ -225,7 +226,7 @@ public class CanvasManager : MonoBehaviour
         #endregion
 
         #region Update list
-        SingeltonManager.Instance.poolManager.UpdateList();
+        SingeltonManager.Instance.poolManager.UpdatePersonalList();
         MakeInputEmpty(NewOrRemoveListNumber);
         #endregion
 
@@ -259,7 +260,7 @@ public class CanvasManager : MonoBehaviour
         #endregion
 
         #region Update list
-        SingeltonManager.Instance.poolManager.UpdateList();
+        SingeltonManager.Instance.poolManager.UpdatePersonalList();
         MakeInputEmpty(NewOrRemoveListNumber);
         #endregion
 
@@ -275,7 +276,7 @@ public class CanvasManager : MonoBehaviour
         #region Call Manager
         try
         {
-           SingeltonManager.Instance.personalWordsManager.RemoveWord(CurrentListIndex, int.Parse(DeletedWordIndex.text)-1);
+           SingeltonManager.Instance.personalWordsManager.RemoveWord(CurrentPersonalListIndex, int.Parse(DeletedWordIndex.text)-1);
         }
         catch
         {
@@ -286,7 +287,7 @@ public class CanvasManager : MonoBehaviour
 
         #region Update list
 
-        SingeltonManager.Instance.poolManager.UpdateWords(CurrentListIndex);
+        SingeltonManager.Instance.poolManager.UpdatePersonalWords(CurrentPersonalListIndex);
         MakeInputEmpty(DeletedWordIndex);
 
         #endregion
@@ -294,9 +295,20 @@ public class CanvasManager : MonoBehaviour
         #region Update scroll and page
 
         BodyPersonalwordScroll.verticalNormalizedPosition = NormalPositionScroll;
-        ResetScroolSize(CurrentListIndex, ContentPersonalword, false);
+        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false);
 
         #endregion
+    }
+
+    public void ShowPublicBtn()
+    {
+        SingeltonManager.Instance.poolManager.UpdatePublicList();
+    }
+
+    public void ShowPublicWords(int index)
+    {
+        SingeltonManager.Instance.poolManager.UpdatePublicWords(index);
+        GotoPage(PublicWordBtnPage.name);
     }
 }
 

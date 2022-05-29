@@ -44,4 +44,14 @@ public class ActionManager : MonoBehaviour
     {
         SingeltonManager.Instance.canvasManager.ShowWordsList();
     }
+
+    public void ShowPublicBtn()
+    {
+        SingeltonManager.Instance.canvasManager.ShowPublicBtn();
+    }
+
+    public void ShowPublicWord()
+    {
+        SingeltonManager.Instance.canvasManager.ShowPublicWords(ID);
+    }
 }

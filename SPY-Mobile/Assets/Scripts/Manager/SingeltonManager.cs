@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class SingeltonManager : MonoBehaviour
 {
-    public CanvasManager canvasManager;
-    public PoolManager poolManager;
-    public PersonalWordsManager personalWordsManager;
-    public AlertManager alertManager;
-    public PublicWordsManager publicWordsManager;
+   
 
     private static SingeltonManager instance;
 
@@ -25,7 +21,16 @@ public class SingeltonManager : MonoBehaviour
     //pools
     public PersonalListPool personalListPool;
     public PersonalWordPool personalWordPool;
+    public PublicListPool publicListPool;
+    public PublicWordPool publicWordPool;
 
     //controler
-    public WordGroupControler wordGroupControler;
+    public WordGroupController wordGroupControler;
+
+    //Manager
+    public CanvasManager canvasManager;
+    public PoolManager poolManager;
+    public PersonalWordsManager personalWordsManager;
+    public AlertManager alertManager;
+    public PublicWordsManager publicWordsManager;
 }

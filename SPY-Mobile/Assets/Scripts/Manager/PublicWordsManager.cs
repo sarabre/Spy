@@ -1,30 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class PublicWordsManager : MonoBehaviour
 {
     public int BtnCount = 20;
     public int WordCount = 80;
 
-    
-    public List<TableDetail> TablesName
+    public TableDetail tableDetail = new TableDetail();
+    public Table table = new Table();
+
+    private List<TableDetail> TableNamesFromDatabase
     {
         get
         {
-            return SingeltonManager.Instance.wordGroupControler.TablesName;
+            return SingeltonManager.Instance.wordGroupControler.TablesNameFromDataBase;
         }
-       
+
     }
 
-    public List<Table> Tables
+    public List<TableDetail> TablesName = new List<TableDetail>();
+
+
+    public List<Table> Tables = new List<Table>();
+    public List<Table> TablesFromDataBase
     {
         get
         {
             return SingeltonManager.Instance.wordGroupControler.Tables;
         }
     }
-    
+
+
+
+    public void SortTable()
+    {
+        //  To match IDs of LiSBtn GameObject(IDGenerator data does not change) to IDs in the database,
+        //  we add every 20 TableDatail to an array. However, we do not quantity the ID.
+        //  We check IDs in PoolManager for active objects.
+
+        for (int i = TablesName.Count; i < BtnCount; i++)
+        {
+            TablesName.Add(tableDetail);
+            tableDetail = new TableDetail();
+        }
+
+        foreach (var item in TableNamesFromDatabase)
+        {
+            TablesName.Insert(item.ID - 50001 , item);
+        }
+        
+    }
+
+    public void SortWords()
+    {
+        
+        for (int i = Tables.Count; i < BtnCount; i++)
+        {
+            Tables.Add(table);
+            table = new Table();
+        }
+
+        foreach (var item in TablesFromDataBase)
+        {
+            try
+            {
+                int index = int.Parse(Regex.Replace(item.TableNameCode, @"\D", ""));
+                Tables.Insert(index - 1, item);
+            }
+            catch
+            {
+
+            }
+            
+        }
+
+    }
 }
 
 

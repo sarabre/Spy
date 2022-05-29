@@ -7,9 +7,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 
-public class WordGroupControler : MonoBehaviour
+public class WordGroupController : MonoBehaviour
 {
-    private string secretKey = "2003";
+    //private string secretKey = "2003";
     //public string addScoreURL =
            // "http://localhost/HighScoreGame/addscore.php?";
 
@@ -19,7 +19,7 @@ public class WordGroupControler : MonoBehaviour
 
 
 
-    public List<TableDetail> TablesName = new List<TableDetail>();
+    public List<TableDetail> TablesNameFromDataBase = new List<TableDetail>();
     public TableDetail tableDetail = new TableDetail();
 
     public List<Table> Tables = new List<Table>();
@@ -35,24 +35,18 @@ public class WordGroupControler : MonoBehaviour
 
     string code;
 
-    public void Start()
+    public void Awake()
     {
-        GetTables();
+        StartCoroutine(GetData());
     }
 
-    public void GetTables()
+    #region Get-Data
+
+
+    IEnumerator GetData()
     {
-       // nameResultText.text = "Player: \n \n";
-       // scoreResultText.text = "Score: \n \n";
-        StartCoroutine(GetTable());
-       
-    }
-    public void SendScoreBtn()
-    {
-      //  StartCoroutine(PostScores(nameTextInput.text,
-       //    Convert.ToInt32(scoreTextInput.text)));
-        //nameTextInput.gameObject.transform.parent.GetComponent<InputField>().text = "";
-        //scoreTextInput.gameObject.transform.parent.GetComponent<InputField>().text = "";
+        yield return StartCoroutine(GetTable());
+        StartCoroutine(GetWords());
     }
 
     IEnumerator GetTable()
@@ -68,7 +62,7 @@ public class WordGroupControler : MonoBehaviour
             string dataText = hs_get.downloadHandler.text;
 
             MatchCollection mc = Regex.Matches(dataText, @"_");
-            Debug.Log(dataText);
+    
             if (mc.Count > 0)
             {
                 string[] splitData = Regex.Split(dataText, @"_");
@@ -79,7 +73,7 @@ public class WordGroupControler : MonoBehaviour
                     if (CountForCheckingIf == 2)
                     {
 
-                        TablesName[CountLoopGetTable].NameCode = splitData[i-1];
+                        TablesNameFromDataBase[CountLoopGetTable].NameCode = splitData[i-1];
                         CountForCheckingIf = 0;
                         CountLoopGetTable++;
                         tableDetail = new TableDetail();
@@ -87,13 +81,14 @@ public class WordGroupControler : MonoBehaviour
                     else if (CountForCheckingIf == 1)
                     {
 
-                        TablesName[CountLoopGetTable].Name = splitData[i-1].faConvert();
+                        TablesNameFromDataBase[CountLoopGetTable].Name = splitData[i-1];
                         CountForCheckingIf = 2;
                     }
                     else
                     {
-                        TablesName.Add(tableDetail);
-                        TablesName[CountLoopGetTable].ID = int.Parse(splitData[i-1]);
+                        
+                        TablesNameFromDataBase.Add(tableDetail);
+                        TablesNameFromDataBase[CountLoopGetTable].ID = int.Parse(splitData[i - 1]);
                         CountForCheckingIf = 1;
                     }
                     
@@ -101,18 +96,16 @@ public class WordGroupControler : MonoBehaviour
             }
         }
 
-
-        StartCoroutine(GetWords());
-
+        SingeltonManager.Instance.publicWordsManager.SortTable();
     }
 
     IEnumerator GetWords()
     {
-        //Tables.Add(table);
-        for (int j = 0; j < TablesName.Count; j++)
+       
+        for (int j = 0; j < TablesNameFromDataBase.Count; j++)
         {
-            code = TablesName[j].NameCode;
-             wordDetail = new WordDetail();
+            code = TablesNameFromDataBase[j].NameCode;
+            wordDetail = new WordDetail();
 
             UnityWebRequest hs_get = UnityWebRequest.Get(GetTableWordsURL + "Code=" + code + "");
             yield return hs_get.SendWebRequest();
@@ -126,10 +119,6 @@ public class WordGroupControler : MonoBehaviour
                 if (mc.Count > 0)
                 {
                     Tables.Add(table);
-                    
-                   
-
-                    Debug.Log("Count  =  " + CountLoopGetTableWord);
 
                     string[] splitData = Regex.Split(dataText, @"_");
                     for (int i = 0; i < mc.Count; i++)
@@ -145,7 +134,7 @@ public class WordGroupControler : MonoBehaviour
                         }
                         else
                         {
-                            Tables[CountLoopGetTableWord].Word[WordCount].Word = splitData[i].faConvert();
+                            Tables[CountLoopGetTableWord].Word[WordCount].Word = splitData[i];
                             wordDetail = new WordDetail();
                             WordCount++;
                         }
@@ -159,10 +148,19 @@ public class WordGroupControler : MonoBehaviour
             }
 
         }
-
+        SingeltonManager.Instance.publicWordsManager.SortWords();
     }
 
-    
+    #endregion
+
+
+    public void SendScoreBtn()
+    {
+        //  StartCoroutine(PostScores(nameTextInput.text,
+        //    Convert.ToInt32(scoreTextInput.text)));
+        //nameTextInput.gameObject.transform.parent.GetComponent<InputField>().text = "";
+        //scoreTextInput.gameObject.transform.parent.GetComponent<InputField>().text = "";
+    }
 
     public string HashInput(string input)
     {
