@@ -27,6 +27,16 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] GridLayoutGroup ContentPersonaBtnGrid;
     [SerializeField] RtlText TitlePersonalWord;
 
+    [SerializeField] ScrollRect BodyPublicwordScroll;
+    [SerializeField] ScrollRect BodyPublicBtnScroll;
+    [SerializeField] RectTransform BodyPublicwordRect;
+    [SerializeField] RectTransform BodyPublicBtnRect;
+    [SerializeField] RectTransform ContentPublicword;
+    [SerializeField] RectTransform ContentPublicBTN;
+    [SerializeField] GridLayoutGroup ContentPublicwordGrid;
+    [SerializeField] GridLayoutGroup ContentPublicBtnGrid;
+    [SerializeField] RtlText TitlePubliclWord;
+
     [SerializeField] InputField AddedWord;
     [SerializeField] InputField DeletedWordIndex;
 
@@ -41,7 +51,8 @@ public class CanvasManager : MonoBehaviour
 
     private int CurrentPersonalListIndex;
     private float ShowAlertTimer = 1f;
-    private float NormalPositionScroll = 10;
+    
+    private float NormalPositionScroll = 1f;
 
     private ListContent NewListContent = new ListContent();
 
@@ -60,33 +71,47 @@ public class CanvasManager : MonoBehaviour
             return BodyPersonalBtnRect.rect.height;
         }
     }
-    private float CalculateContentHeight(int index,bool IsListBtn)
+
+    float MinHeightScrollPublicWord
+    {
+        get
+        {
+            return BodyPublicwordRect.rect.height;
+        }
+    }
+
+    float MinHeightScrollPublicBtn
+    {
+        get
+        {
+            return BodyPublicBtnRect.rect.height;
+        }
+    }
+
+
+    private float CalculateContentHeightPersonal(int index,bool IsListBtn,int BtnCount,float MinHeightBtn , float BtnY, int WordCount, float MinHeightWord, float WordY)
     {
         if (IsListBtn)
         {
-            float height = Convert.ToInt32(SingeltonManager.Instance.personalWordsManager.wordlist.Count/2 ) * ContentPersonaBtnGrid.cellSize.y;
+            float height = BtnCount * BtnY;
 
-            Debug.Log(height);
-            Debug.Log("MinHeightScrollPersonalBtn  = " + MinHeightScrollPersonalBtn);
 
-            if (height < MinHeightScrollPersonalBtn)
+            if (height < MinHeightBtn)
                 return 0;
             else
-                return (height - MinHeightScrollPersonalBtn + ContentPersonaBtnGrid.cellSize.y * 2.5f); // for reduce Numerical error
+                return (height - MinHeightBtn + BtnY * 2.5f); // for reduce Numerical error
 
 
         }
         else
         {
-            float height = (SingeltonManager.Instance.personalWordsManager.wordlist[index].Words.Count) * ContentPersonalwordGrid.cellSize.y;
+            float height = WordCount * WordY;
 
-            Debug.Log(height);
-            Debug.Log("MinHeightScrollPersonalWord  = " + MinHeightScrollPersonalWord);
 
-            if (height < MinHeightScrollPersonalWord)
+            if (height < MinHeightWord)
                 return 0;
             else
-                return (height - MinHeightScrollPersonalWord * 1.7f);
+                return (height - MinHeightWord * 1.7f);
         }
        
         
@@ -119,7 +144,7 @@ public class CanvasManager : MonoBehaviour
         #region Update scroll
 
         BodyPersonalBtnScroll.verticalNormalizedPosition = NormalPositionScroll;
-        ResetScroolSize(0, ContentPersonalBTN, true);
+        ResetScroolSize(0, ContentPersonalBTN, true,false);
         #endregion
     }
     public void ShowPersonalWord(int index ) //index list that the page show from Wordlist
@@ -127,13 +152,17 @@ public class CanvasManager : MonoBehaviour
         CurrentPersonalListIndex = index;
         SingeltonManager.Instance.poolManager.UpdatePersonalWords(CurrentPersonalListIndex);
         TitlePersonalWord.text = SingeltonManager.Instance.poolManager.NamePersonalWordList(index);
-        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false);
+        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false,false);
         GotoPage(PersonalWordBtnPage.name);
     }
    
-    void ResetScroolSize(int index,RectTransform ScrollContent,bool IsList)
+    void ResetScroolSize(int index,RectTransform ScrollContent,bool IsList,bool IsPublic)
     {
-        ScrollContent.sizeDelta = new Vector2(0, CalculateContentHeight(index,IsList));
+        Debug.Log("IsPublic  = " + IsPublic);
+        if(!IsPublic)
+            ScrollContent.sizeDelta = new Vector2(0, CalculateContentHeightPersonal(index,IsList, Convert.ToInt32(SingeltonManager.Instance.personalWordsManager.wordlist.Count / 2), MinHeightScrollPersonalBtn, ContentPersonaBtnGrid.cellSize.y, SingeltonManager.Instance.personalWordsManager.wordlist[index].Words.Count, MinHeightScrollPersonalWord, ContentPersonalwordGrid.cellSize.y));
+        else
+            ScrollContent.sizeDelta = new Vector2(0, CalculateContentHeightPersonal(index,IsList, SingeltonManager.Instance.wordGroupControler.TablesNameFromDataBase.Count , MinHeightScrollPublicBtn, ContentPublicBtnGrid.cellSize.y, SingeltonManager.Instance.wordGroupControler.Tables[index].Word.Count, MinHeightScrollPublicWord, ContentPublicwordGrid.cellSize.y));
     }
 
     public void ShowAlert(int code)
@@ -199,7 +228,7 @@ public class CanvasManager : MonoBehaviour
         #region Update scroll and page
 
         BodyPersonalwordScroll.verticalNormalizedPosition = NormalPositionScroll;
-        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false);
+        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false,false);
 
         #endregion
     }
@@ -233,7 +262,7 @@ public class CanvasManager : MonoBehaviour
         #region Update scroll
 
         BodyPersonalBtnScroll.verticalNormalizedPosition = NormalPositionScroll;
-        ResetScroolSize(0, ContentPersonalBTN, true);
+        ResetScroolSize(0, ContentPersonalBTN, true,false);
         #endregion
     }
 
@@ -267,7 +296,7 @@ public class CanvasManager : MonoBehaviour
         #region Update scroll
 
         BodyPersonalBtnScroll.verticalNormalizedPosition = NormalPositionScroll;
-        ResetScroolSize(0, ContentPersonalBTN, true);
+        ResetScroolSize(0, ContentPersonalBTN, true,false);
         #endregion
     }
 
@@ -295,7 +324,7 @@ public class CanvasManager : MonoBehaviour
         #region Update scroll and page
 
         BodyPersonalwordScroll.verticalNormalizedPosition = NormalPositionScroll;
-        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false);
+        ResetScroolSize(CurrentPersonalListIndex, ContentPersonalword, false,false);
 
         #endregion
     }
@@ -308,6 +337,9 @@ public class CanvasManager : MonoBehaviour
     public void ShowPublicWords(int index)
     {
         SingeltonManager.Instance.poolManager.UpdatePublicWords(index);
+        TitlePubliclWord.text = SingeltonManager.Instance.poolManager.NamePublicWordList(index);
+        BodyPublicwordScroll.verticalNormalizedPosition = NormalPositionScroll;
+        ResetScroolSize(index, ContentPublicword, false,true);
         GotoPage(PublicWordBtnPage.name);
     }
 }

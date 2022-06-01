@@ -101,6 +101,13 @@ public class PoolManager : MonoBehaviour
 
     #region Public List
 
+    public int CodeNum
+    {
+        get
+        {
+            return SingeltonManager.Instance.publicWordsManager.CodeNum;
+        }
+    }
    
     private int BtnCount
     {
@@ -144,7 +151,7 @@ public class PoolManager : MonoBehaviour
     {
         for (int i = 0; i < BtnCount; i++)
         {
-            if (PublicTables[i].ID % 50000 == i+1) // mean this is full or count of words id more than 0
+            if (PublicTables[i].ID % CodeNum == i+1) // mean this is full or count of words id more than 0
             {
            
                 PublicListBtn[i].GetComponentInChildren<RtlText>().text = PublicTables[i].Name ;
@@ -183,6 +190,10 @@ public class PoolManager : MonoBehaviour
         EnabledPublicListWord(index);
     }
 
+    public string NamePublicWordList(int index)
+    {
+        return PublicTables[index].Name;
+    }
 
     #endregion
 }

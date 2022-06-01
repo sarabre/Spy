@@ -7,6 +7,7 @@ public class PublicWordsManager : MonoBehaviour
 {
     public int BtnCount = 20;
     public int WordCount = 80;
+    public int CodeNum = 50000;
 
     public TableDetail tableDetail = new TableDetail();
     public Table table = new Table();
@@ -48,7 +49,7 @@ public class PublicWordsManager : MonoBehaviour
 
         foreach (var item in TableNamesFromDatabase)
         {
-            TablesName.Insert(item.ID - 50001 , item);
+            TablesName.Insert(item.ID - (CodeNum+1), item);
         }
         
     }
