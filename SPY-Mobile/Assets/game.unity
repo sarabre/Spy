@@ -7875,6 +7875,16 @@ MonoBehaviour:
   wordDetail:
     Word: 
     ID: 0
+  AddToSuggested: http://localhost/Spy/AddToSuggested.php?
+  CheckAdminURL: http://localhost/Spy/CheckAdmin.php?
+  GetSuggestedWordURL: http://localhost/Spy/GetSuggestedWord.php?
+  SuggestedWordTable: []
+  suggestedWord:
+    Word: 
+    WgName: 
+    WgCode: 0
+  AddSuggestedWordURL: http://localhost/Spy/AddToTables.php?
+  RemoveSuggestedWordURL: http://localhost/Spy/RemoveFromTables.php?
 --- !u!1 &496937527
 GameObject:
   m_ObjectHideFlags: 0

@@ -78,6 +78,23 @@ public class PublicWordsManager : MonoBehaviour
         }
 
     }
+    public int GetCodeOfTable(string name)
+    {
+        return CodeNum + int.Parse(Regex.Replace(name, @"\D", ""));
+    }
+
+    public int GetNewWordIndex(string WordCode)
+    {
+        for (int i = 0; i < Tables.Count; i++)
+        {
+            if(Tables[i].TableNameCode.Contains( WordCode))
+            {
+                return Tables[i].Word.Count;
+            }
+        }
+        return 0;
+    }
+
 }
 
 
@@ -101,4 +118,12 @@ public class WordDetail
 {
     public string Word; // کلمه ۱
     public int ID; //5000101
+}
+
+[Serializable]
+public class SuggestedWord
+{
+    public string Word; //کلمه پیشنهادی 
+    public string WgName; //wg-01
+    public int WgCode; //5000101
 }

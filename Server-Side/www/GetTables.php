@@ -1,24 +1,9 @@
 
 <?php
 
-
-
 // get all table and sow thier name
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "spy-db";
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->exec("set names utf8mb4");
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-} catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
-
+include('Connection.php');
 
 
 $sth = $conn->query('SELECT * FROM `wordsgroup-list` WHERE `count` > 0; ');
@@ -30,9 +15,9 @@ if (count($result) > 0)
 
     foreach ($result as $r)
     {
-        echo $r['ID'], "\n _";
-        echo $r['name'], "\n _";
-        echo $r['name-code'], "\n _";
+        echo $r['ID'], " _";
+        echo $r['name'], " _";
+        echo $r['name-code'], " _";
 
 
     }

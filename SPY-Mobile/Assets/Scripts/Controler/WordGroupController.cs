@@ -9,15 +9,29 @@ using UnityEngine.Networking;
 
 public class WordGroupController : MonoBehaviour
 {
-    //private string secretKey = "2003";
-    //public string addScoreURL =
-           // "http://localhost/HighScoreGame/addscore.php?";
+    public void Awake()
+    {
+        StartCoroutine(GetData());
+        //SendSuggestedWord("suggestedWord2", "wg-02");
+        //CheckAdmin("reyhane","228768");
+        //CheckAdmin("SaraEft","9512357");
+        //GetSuggestedWord();
+        //AddWord("teeeee", "wg-04"); // read persian word from text
+        //RemoveWord("testtt");
+    }
+
+
+
+    public void Start()
+    {
+       
+        
+    }
+
+    #region Get-Data
 
     public string GetTableURL = "http://localhost/Spy/GetTables.php?";
     public string GetTableWordsURL = "http://localhost/Spy/GetTableWords.php?";
-
-
-
 
     public List<TableDetail> TablesNameFromDataBase = new List<TableDetail>();
     public TableDetail tableDetail = new TableDetail();
@@ -34,14 +48,6 @@ public class WordGroupController : MonoBehaviour
     int CountForCheckingIf = 0;
 
     string code;
-
-    public void Awake()
-    {
-        StartCoroutine(GetData());
-    }
-
-    #region Get-Data
-
 
     IEnumerator GetData()
     {
@@ -149,17 +155,29 @@ public class WordGroupController : MonoBehaviour
 
         }
         SingeltonManager.Instance.publicWordsManager.SortWords();
+        
+
     }
 
     #endregion
 
+    #region Send Suggested words
 
-    public void SendScoreBtn()
+    public string AddToSuggested = "http://localhost/Spy/AddToSuggested.php?";
+
+    public void SendSuggestedWord(string word, string wgName)
     {
-        //  StartCoroutine(PostScores(nameTextInput.text,
-        //    Convert.ToInt32(scoreTextInput.text)));
-        //nameTextInput.gameObject.transform.parent.GetComponent<InputField>().text = "";
-        //scoreTextInput.gameObject.transform.parent.GetComponent<InputField>().text = "";
+        int wgCode = SingeltonManager.Instance.publicWordsManager.GetCodeOfTable(wgName);
+        StartCoroutine(PostSuggestedWord(word, wgName, wgCode));
+    }
+    IEnumerator PostSuggestedWord(string word, string wgName, int wgCode)
+    {
+        string hash = HashInput(word);
+        string post_url = AddToSuggested + "word=" + word + "&wgcode=" + wgCode + "&wgname=" + wgName + "&hash=" + hash;
+        UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
+        yield return hs_post.SendWebRequest();
+        if (hs_post.error != null)
+            Debug.Log("There was an error posting the high score: " + hs_post.error);
     }
 
     public string HashInput(string input)
@@ -171,4 +189,167 @@ public class WordGroupController : MonoBehaviour
                  BitConverter.ToString(hashValue).Replace("-", "").ToLower();
         return hash_convert;
     }
+
+    #endregion
+
+    #region Check Admin
+
+    public string CheckAdminURL = "http://localhost/Spy/CheckAdmin.php?";
+
+    public void CheckAdmin(string username, string password)
+    {
+       StartCoroutine(CheckAdmins(username, password));
+        
+    }
+
+    IEnumerator CheckAdmins(string username,string password)
+    {
+        UnityWebRequest hs_get = UnityWebRequest.Get(CheckAdminURL + "UserName=" + username + "&Password="+password);
+        yield return hs_get.SendWebRequest();
+
+        if (hs_get.error != null)
+            Debug.Log("There was an error getting the high score: "
+                    + hs_get.error);
+        else
+        {
+            string dataText = hs_get.downloadHandler.text;
+            MatchCollection mc = Regex.Matches(dataText, @"_");
+
+            if (mc.Count > 0)
+            {
+                Debug.Log("admin is");
+            }
+            else
+            {
+                Debug.Log("admin is noooot");
+            }
+        }
+
+        
+    }
+
+
+    #endregion
+
+    #region Get Suggested Word
+
+    public string GetSuggestedWordURL = "http://localhost/Spy/GetSuggestedWord.php?";
+
+    public List<SuggestedWord> SuggestedWordTable = new List<SuggestedWord>();
+    public SuggestedWord suggestedWord = new SuggestedWord();
+
+    int CountLoopGetSuggestedWord;
+    int CountForCheckingIfSW;
+    public void GetSuggestedWord()
+    {
+        StartCoroutine(GetSuggestedWords());
+    }
+    IEnumerator GetSuggestedWords()
+    {
+
+        UnityWebRequest hs_get = UnityWebRequest.Get(GetSuggestedWordURL);
+        yield return hs_get.SendWebRequest();
+
+        if (hs_get.error != null)
+            Debug.Log("There was an error getting the high score: "
+                    + hs_get.error);
+        else
+        {
+            string dataText = hs_get.downloadHandler.text;
+
+            MatchCollection mc = Regex.Matches(dataText, @"_");
+            if (mc.Count > 0)
+            {
+                string[] splitData = Regex.Split(dataText, @"_");
+                CountLoopGetSuggestedWord = 0;
+                for (int i = 1; i <= mc.Count; i++)
+                {
+
+                    if (CountForCheckingIfSW == 2)
+                    {
+
+                        SuggestedWordTable[CountLoopGetSuggestedWord].WgName = splitData[i - 1];
+                        CountForCheckingIfSW = 0;
+                        CountLoopGetSuggestedWord++;
+                        suggestedWord = new SuggestedWord();
+                    }
+                    else if (CountForCheckingIfSW == 1)
+                    {
+
+                        SuggestedWordTable[CountLoopGetSuggestedWord].WgCode = int.Parse(splitData[i - 1]);
+                        CountForCheckingIfSW = 2;
+                    }
+                    else
+                    {
+
+                        SuggestedWordTable.Add(suggestedWord);
+                        SuggestedWordTable[CountLoopGetSuggestedWord].Word = splitData[i - 1];
+                        CountForCheckingIfSW = 1;
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    #endregion
+
+    #region Accept Suggested Word
+
+    public string AddSuggestedWordURL = "http://localhost/Spy/AddToTables.php?";
+
+    int WgID;
+    int WordID;
+
+    public void AddWord(string word,string WgCode)
+    {
+        WgID = SingeltonManager.Instance.publicWordsManager.GetCodeOfTable(WgCode);
+        WordID = SingeltonManager.Instance.publicWordsManager.GetNewWordIndex(WgCode);
+
+        if (WordID != 0)
+            StartCoroutine(AddSuggestedWord(word, WordID, WgCode, WgID));
+        else
+            Debug.Log("Not Valid Word Group Name");
+
+    }
+    IEnumerator AddSuggestedWord(string word, int wordID, string WgCode, int WgID)
+    {
+       
+        string hash = HashInput(word);
+        string post_url = AddSuggestedWordURL + "TableCode=" + WgCode + "&WordID=" + wordID + "&Word=" + word + "&TableID=" + WgID;
+        UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
+        yield return hs_post.SendWebRequest();
+        if (hs_post.error != null)
+            Debug.Log("There was an error posting the high score: " + hs_post.error);
+    }
+
+
+
+    #endregion
+
+    #region Reject Suggested Word
+
+    public string RemoveSuggestedWordURL = "http://localhost/Spy/RemoveFromTables.php?";
+
+   
+
+    public void RemoveWord(string word)
+    {
+        
+        StartCoroutine(RemoveSuggestedWord(word));
+
+    }
+    IEnumerator RemoveSuggestedWord(string word)
+    {
+       
+        string hash = HashInput(word);
+        string post_url = RemoveSuggestedWordURL + "Word=" + word ;
+        UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
+        yield return hs_post.SendWebRequest();
+        if (hs_post.error != null)
+            Debug.Log("There was an error posting the high score: " + hs_post.error);
+    }
+
+    #endregion
 }
