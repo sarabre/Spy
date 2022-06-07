@@ -13,25 +13,19 @@ public class WordGroupController : MonoBehaviour
     {
         StartCoroutine(GetData());
         //SendSuggestedWord("suggestedWord2", "wg-02");
-        //CheckAdmin("reyhane","228768");
-        //CheckAdmin("SaraEft","9512357");
-        //GetSuggestedWord();
-        //AddWord("teeeee", "wg-04"); // read persian word from text
-        //RemoveWord("testtt");
-    }
-
-
-
-    public void Start()
-    {
        
         
+        
+
+        //RemoveWord(5000102, "wg-01");
     }
+
+    
 
     #region Get-Data
 
-    public string GetTableURL = "http://localhost/Spy/GetTables.php?";
-    public string GetTableWordsURL = "http://localhost/Spy/GetTableWords.php?";
+    string GetTableURL = "http://localhost/Spy/GetTables.php?";
+    string GetTableWordsURL = "http://localhost/Spy/GetTableWords.php?";
 
     public List<TableDetail> TablesNameFromDataBase = new List<TableDetail>();
     public TableDetail tableDetail = new TableDetail();
@@ -59,7 +53,7 @@ public class WordGroupController : MonoBehaviour
     {
         UnityWebRequest hs_get = UnityWebRequest.Get(GetTableURL);
         yield return hs_get.SendWebRequest();
-       
+
         if (hs_get.error != null)
             Debug.Log("There was an error getting the high score: "
                     + hs_get.error);
@@ -68,18 +62,18 @@ public class WordGroupController : MonoBehaviour
             string dataText = hs_get.downloadHandler.text;
 
             MatchCollection mc = Regex.Matches(dataText, @"_");
-    
+
             if (mc.Count > 0)
             {
                 string[] splitData = Regex.Split(dataText, @"_");
                 CountLoopGetTable = 0;
                 for (int i = 1; i <= mc.Count; i++)
                 {
-                    
+
                     if (CountForCheckingIf == 2)
                     {
 
-                        TablesNameFromDataBase[CountLoopGetTable].NameCode = splitData[i-1];
+                        TablesNameFromDataBase[CountLoopGetTable].NameCode = splitData[i - 1];
                         CountForCheckingIf = 0;
                         CountLoopGetTable++;
                         tableDetail = new TableDetail();
@@ -87,17 +81,17 @@ public class WordGroupController : MonoBehaviour
                     else if (CountForCheckingIf == 1)
                     {
 
-                        TablesNameFromDataBase[CountLoopGetTable].Name = splitData[i-1];
+                        TablesNameFromDataBase[CountLoopGetTable].Name = splitData[i - 1];
                         CountForCheckingIf = 2;
                     }
                     else
                     {
-                        
+
                         TablesNameFromDataBase.Add(tableDetail);
                         TablesNameFromDataBase[CountLoopGetTable].ID = int.Parse(splitData[i - 1]);
                         CountForCheckingIf = 1;
                     }
-                    
+
                 }
             }
         }
@@ -107,7 +101,7 @@ public class WordGroupController : MonoBehaviour
 
     IEnumerator GetWords()
     {
-       
+
         for (int j = 0; j < TablesNameFromDataBase.Count; j++)
         {
             code = TablesNameFromDataBase[j].NameCode;
@@ -132,10 +126,10 @@ public class WordGroupController : MonoBehaviour
                         if (i % 2 == 0)
                         {
                             Tables[CountLoopGetTableWord].TableNameCode = code;
-                            
+
                             Tables[CountLoopGetTableWord].Word.Add(wordDetail);
                             Tables[CountLoopGetTableWord].Word[WordCount].ID = int.Parse(splitData[i]);
-                            
+
 
                         }
                         else
@@ -155,7 +149,7 @@ public class WordGroupController : MonoBehaviour
 
         }
         SingeltonManager.Instance.publicWordsManager.SortWords();
-        
+
 
     }
 
@@ -163,7 +157,7 @@ public class WordGroupController : MonoBehaviour
 
     #region Send Suggested words
 
-    public string AddToSuggested = "http://localhost/Spy/AddToSuggested.php?";
+    string AddToSuggested = "http://localhost/Spy/AddToSuggested.php?";
 
     public void SendSuggestedWord(string word, string wgName)
     {
@@ -194,15 +188,17 @@ public class WordGroupController : MonoBehaviour
 
     #region Check Admin
 
-    public string CheckAdminURL = "http://localhost/Spy/CheckAdmin.php?";
-
+    
+    string CheckAdminURL = "http://localhost/Spy/CheckAdmin.php?";
     public void CheckAdmin(string username, string password)
     {
-       StartCoroutine(CheckAdmins(username, password));
-        
+
+        StartCoroutine(CheckAdmins(username, password));
+
     }
 
-    IEnumerator CheckAdmins(string username,string password)
+
+  IEnumerator CheckAdmins(string username,string password)
     {
         UnityWebRequest hs_get = UnityWebRequest.Get(CheckAdminURL + "UserName=" + username + "&Password="+password);
         yield return hs_get.SendWebRequest();
@@ -217,23 +213,24 @@ public class WordGroupController : MonoBehaviour
 
             if (mc.Count > 0)
             {
-                Debug.Log("admin is");
+                string[] splitData = Regex.Split(dataText, @"_");
+                SingeltonManager.Instance.profile.name = splitData[0];
+                SingeltonManager.Instance.profile.UserSit = UserSituation.Admin;
             }
             else
             {
-                Debug.Log("admin is noooot");
+                SingeltonManager.Instance.profile.UserSit = UserSituation.Player;
             }
         }
 
         
     }
-
-
+    
     #endregion
 
     #region Get Suggested Word
 
-    public string GetSuggestedWordURL = "http://localhost/Spy/GetSuggestedWord.php?";
+    string GetSuggestedWordURL = "http://localhost/Spy/GetSuggestedWord.php?";
 
     public List<SuggestedWord> SuggestedWordTable = new List<SuggestedWord>();
     public SuggestedWord suggestedWord = new SuggestedWord();
@@ -297,7 +294,7 @@ public class WordGroupController : MonoBehaviour
 
     #region Accept Suggested Word
 
-    public string AddSuggestedWordURL = "http://localhost/Spy/AddToTables.php?";
+    string AddSuggestedWordURL = "http://localhost/Spy/AddToTables.php?";
 
     int WgID;
     int WordID;
@@ -317,9 +314,10 @@ public class WordGroupController : MonoBehaviour
     {
        
         string hash = HashInput(word);
-        string post_url = AddSuggestedWordURL + "TableCode=" + WgCode + "&WordID=" + wordID + "&Word=" + word + "&TableID=" + WgID;
+        string post_url = AddSuggestedWordURL + "TableCode=" + WgCode.Replace(" ", String.Empty) + "&WordID=" + wordID + "&Word=" + word.Replace(" ", String.Empty) + "&TableID=" + WgID;
         UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
         yield return hs_post.SendWebRequest();
+        Debug.Log(post_url);
         if (hs_post.error != null)
             Debug.Log("There was an error posting the high score: " + hs_post.error);
     }
@@ -328,13 +326,13 @@ public class WordGroupController : MonoBehaviour
 
     #endregion
 
-    #region Reject Suggested Word
+    #region Reject Suggested Word 
 
-    public string RemoveSuggestedWordURL = "http://localhost/Spy/RemoveFromTables.php?";
+    string RemoveSuggestedWordURL = "http://localhost/Spy/RemoveFromSuggestion.php?";
 
    
 
-    public void RemoveWord(string word)
+    public void RemoveSuggestion(string word)
     {
         
         StartCoroutine(RemoveSuggestedWord(word));
@@ -344,7 +342,33 @@ public class WordGroupController : MonoBehaviour
     {
        
         string hash = HashInput(word);
-        string post_url = RemoveSuggestedWordURL + "Word=" + word ;
+        string post_url = RemoveSuggestedWordURL + "Word=" + word.Replace(" ", String.Empty);
+        Debug.Log(post_url);
+        UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
+        yield return hs_post.SendWebRequest();
+        if (hs_post.error != null)
+            Debug.Log("There was an error posting the high score: " + hs_post.error);
+    }
+
+    #endregion
+
+    #region Remove Word From Table
+
+    string RemoveWordURL = "http://localhost/Spy/RemoveFromWordGroup.php?";
+
+    
+    public void RemoveWord(int wordID, string WgCode)
+    {
+        WgID = SingeltonManager.Instance.publicWordsManager.GetCodeOfTable(WgCode);
+
+        StartCoroutine(RemoveWord(wordID, WgCode, WgID));
+       
+    }
+    IEnumerator RemoveWord(int wordID, string WgCode, int WgID)
+    {
+
+        string hash = HashInput(WgCode);
+        string post_url = RemoveWordURL + "TableCode=" + WgCode + "&WordID=" + wordID + "&TableID=" + WgID;
         UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
         yield return hs_post.SendWebRequest();
         if (hs_post.error != null)

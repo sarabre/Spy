@@ -21,8 +21,8 @@ if (count($result) > 0)
 
     foreach ($result as $r)
     {
-        echo $r['ID'], " _";
-        echo $r['Word'], " _";
+        echo $r['ID'], "_";
+        echo $r['Word'], "_";
 
     }
 }

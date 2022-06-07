@@ -15,9 +15,9 @@ if (count($result) > 0)
 
     foreach ($result as $r)
     {
-        echo $r['ID'], " _";
-        echo $r['name'], " _";
-        echo $r['name-code'], " _";
+        echo $r['ID'], "_";
+        echo $r['name'], "_";
+        echo $r['name-code'], "_";
 
 
     }

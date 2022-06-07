@@ -14,9 +14,9 @@ if (count($result) > 0)
 
     foreach ($result as $r)
     {
-        echo $r['Word'], " _";
-        echo $r['wg-code'], " _";
-        echo $r['wg-name'], " _";
+        echo $r['Word'], "_";
+        echo $r['wg-code'], "_";
+        echo $r['wg-name'], "_";
 
     }
 }

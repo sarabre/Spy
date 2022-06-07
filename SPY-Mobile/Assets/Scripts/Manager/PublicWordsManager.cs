@@ -89,10 +89,20 @@ public class PublicWordsManager : MonoBehaviour
         {
             if(Tables[i].TableNameCode.Contains( WordCode))
             {
-                return Tables[i].Word.Count;
+                return (CodeNum * 10) + Tables[i].Word.Count;
             }
         }
         return 0;
+    }
+
+    public string GetNameOfTableByCode(string WgCode)
+    {
+        for (int i = 0; i < TablesName.Count ; i++)
+        {
+            if (TablesName[i].NameCode == WgCode)
+                return TablesName[i].Name;
+        }
+        return null;
     }
 
 }

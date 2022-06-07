@@ -23,8 +23,9 @@ public class SingeltonManager : MonoBehaviour
     public PersonalWordPool personalWordPool;
     public PublicListPool publicListPool;
     public PublicWordPool publicWordPool;
+    public SuggestedWordPool suggestedWordPool;
 
-    //controler
+    //controller
     public WordGroupController wordGroupControler;
 
     //Manager
@@ -33,4 +34,9 @@ public class SingeltonManager : MonoBehaviour
     public PersonalWordsManager personalWordsManager;
     public AlertManager alertManager;
     public PublicWordsManager publicWordsManager;
+    public SuggestionManager suggestionManager;
+
+    //profile
+    public Profile profile;
+
 }

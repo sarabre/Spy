@@ -13,10 +13,9 @@ include('Connection.php');
 $TableCode =  $_GET["TableCode"]  ;
 $WordID =  $_GET["WordID"]  ;
 $Word =  $_GET["Word"]  ;
-echo $Word;
 
 
-$sth = $conn->query("INSERT INTO `".$TableCode."` VALUES ('".$WordID."', '".$Word."');");
+$sth = $conn->query("INSERT INTO `".$TableCode."`` VALUES ('".$WordID."', '".$Word."');");
 $sth->setFetchMode(PDO::FETCH_ASSOC);
 
 
@@ -27,4 +26,10 @@ $sth->setFetchMode(PDO::FETCH_ASSOC);
 $TableID =  $_GET["TableID"]  ;
 
 $sth = $conn->query("UPDATE `wordsgroup-list` SET `Count`= `Count` + 1 WHERE `ID`='".$TableID."'");
+$sth->setFetchMode(PDO::FETCH_ASSOC);
+
+// -------------------------- delete from suggestion
+
+
+$sth = $conn->query("DELETE FROM `suggested-words` WHERE word = '".$Word."'");
 $sth->setFetchMode(PDO::FETCH_ASSOC);

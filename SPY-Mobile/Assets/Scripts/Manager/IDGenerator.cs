@@ -9,4 +9,8 @@ public class IDGenerator : MonoBehaviour
     public int FatherID;
     public int ListID;
     public bool IsPublic;
+
+    // suggestion identity
+    public string word;
+    public string WordGroupCode;
 }

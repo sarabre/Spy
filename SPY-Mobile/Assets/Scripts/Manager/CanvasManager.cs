@@ -49,6 +49,12 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] RtlText PersonalListBtnDetail;
 
+    [SerializeField] InputField UserName;
+    [SerializeField] InputField PassWord;
+
+    [SerializeField] Text AdminWelcome;
+    public string Welcome;
+
     private int CurrentPersonalListIndex;
     private float ShowAlertTimer = 1f;
     
@@ -341,6 +347,64 @@ public class CanvasManager : MonoBehaviour
         BodyPublicwordScroll.verticalNormalizedPosition = NormalPositionScroll;
         ResetScroolSize(index, ContentPublicword, false,true);
         GotoPage(PublicWordBtnPage.name);
+    }
+
+    public void Login(string PageName)
+    {
+        // 4006 wait for some seconde
+        // 4007 no internet
+        // 4008 you are not admin
+        StartCoroutine(DetermineUserSituation(PageName));
+        
+    }
+
+    IEnumerator DetermineUserSituation(string PageName)
+    {
+        SingeltonManager.Instance.wordGroupControler.CheckAdmin(UserName.text,PassWord.text);
+
+        if (SingeltonManager.Instance.profile.UserSit == UserSituation.Unknown)
+            ShowAlert(4006);
+
+        yield return new WaitForSeconds(1f);
+
+        if (SingeltonManager.Instance.profile.UserSit == UserSituation.Player)
+            ShowAlert(4008);
+
+        if (SingeltonManager.Instance.profile.UserSit == UserSituation.Admin)
+        {
+            WelcomeAdmin();
+            SingeltonManager.Instance.suggestionManager.GetSuggestion();
+            
+            yield return new WaitForSeconds(2f);
+            
+            GotoPage(PageName);
+        }
+        
+    }
+
+    public void WelcomeAdmin()
+    {
+        AdminWelcome.text = (SingeltonManager.Instance.profile.name + Welcome);
+    }
+
+    public void IsAdmin(string PageAdmin, string PagePlayer)
+    {
+        if (SingeltonManager.Instance.profile.UserSit == UserSituation.Admin)
+            GotoPage(PageAdmin);
+        else
+            GotoPage(PagePlayer);
+    }
+
+    public void AcceptSuggestion(IDGenerator Info,GameObject tmp)
+    {
+        SingeltonManager.Instance.wordGroupControler.AddWord(Info.word, Info.WordGroupCode);
+        tmp.SetActive(false);
+    }
+
+    public void RejectSuggestion(GameObject tmp, IDGenerator Info)
+    {
+        SingeltonManager.Instance.wordGroupControler.RemoveSuggestion(Info.word);
+        tmp.SetActive(false);
     }
 }
 

@@ -54,4 +54,30 @@ public class ActionManager : MonoBehaviour
     {
         SingeltonManager.Instance.canvasManager.ShowPublicWords(ID);
     }
+    public void Login(GameObject Page)
+    {
+        SingeltonManager.Instance.canvasManager.Login(Page.name);
+    }
+
+    GameObject PageAdmin;
+
+    public void DetermineUserObject1(GameObject PageAdmin)
+    {
+        this.PageAdmin = PageAdmin;
+    }
+    public void DetermineUserObject2(GameObject PagePlayer)
+    {
+        SingeltonManager.Instance.canvasManager.IsAdmin(PageAdmin.name, PagePlayer.name);
+    }
+
+    public void AcceptSuggestion()
+    {
+        SingeltonManager.Instance.canvasManager.AcceptSuggestion(gameObject.transform.parent.GetComponentInParent<IDGenerator>(), gameObject.transform.parent.parent.gameObject);
+    }
+
+    public void RejectSuggestion()
+    {
+        SingeltonManager.Instance.canvasManager.RejectSuggestion(gameObject.transform.parent.parent.gameObject, gameObject.transform.parent.GetComponentInParent<IDGenerator>());
+    }
+
 }
