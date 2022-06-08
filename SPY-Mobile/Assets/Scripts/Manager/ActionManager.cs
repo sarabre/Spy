@@ -11,6 +11,7 @@ public class ActionManager : MonoBehaviour
         }
     }
 
+    #region Word Manager - part
     public void ChangePage(GameObject Page)
     {
         SingeltonManager.Instance.canvasManager.GotoPage(Page.name);
@@ -90,4 +91,14 @@ public class ActionManager : MonoBehaviour
         SingeltonManager.Instance.canvasManager.SendSuggestion();
     }
 
+    #endregion
+
+    #region Game - part
+
+    public void NewPlayer()
+    {
+        SingeltonManager.Instance.canvasManager.NewPlayer();
+    }
+
+    #endregion
 }

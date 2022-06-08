@@ -35,8 +35,12 @@ public class SingeltonManager : MonoBehaviour
     public AlertManager alertManager;
     public PublicWordsManager publicWordsManager;
     public SuggestionManager suggestionManager;
+    public GameManager GameManager;
 
     //profile
     public Profile profile;
+
+    //Team
+    public Team team;
 
 }

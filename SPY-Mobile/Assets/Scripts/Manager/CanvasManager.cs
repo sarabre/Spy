@@ -13,6 +13,9 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] GameObject CurrentPage;
 
+    #region Word Manager - part
+
+
     [SerializeField] GameObject PersonalWordBtnPage;
     [SerializeField] GameObject PublicWordBtnPage;
     
@@ -447,6 +450,38 @@ public class CanvasManager : MonoBehaviour
         ShowAlert(4004); //suggestion succesed
         MakeInputEmpty(NewWordInSuggestion);
     }
+
+    #endregion
+
+    #region Game - part
+
+    [SerializeField] GameObject Player;
+    [SerializeField] Transform PlayerFather; // Content in grid
+    [SerializeField] List<GameObject> Players;
+
+
+
+    public void NewPlayer()
+    {
+        if ( Players.Count < 8)
+        {
+            if(Players.Count == 0 || Players[Players.Count-1].GetComponent<InputField>().text != String.Empty ) //user should type the name before add new player
+            {
+                GameObject tmp = Instantiate(Player, PlayerFather);
+                Players.Add(tmp);
+            }
+            else
+            {
+                ShowAlert(4011); // Input Player name
+            }
+        }
+        else
+            ShowAlert(4005); // not more than 8 player
+       
+    }
+
+    //public void Add
+    #endregion
 }
 
 
