@@ -78,24 +78,43 @@ public class PublicWordsManager : MonoBehaviour
         }
 
     }
-    public int GetCodeOfTable(string name)
+    public int GetCodeOfTable(string name) //50001
     {
-        return CodeNum + int.Parse(Regex.Replace(name, @"\D", ""));
+        int index = int.Parse(Regex.Replace(name, @"\D", ""));
+        if (index < 10)
+        {
+            return CodeNum + index;
+        }
+        else
+        {
+            return (CodeNum/10) + index;
+        }
     }
 
-    public int GetNewWordIndex(string WordCode)
+    public int GetNewWordIndex(string WordCode) // new
     {
         for (int i = 0; i < Tables.Count; i++)
         {
             if(Tables[i].TableNameCode.Contains( WordCode))
             {
-                return (CodeNum * 10) + Tables[i].Word.Count;
+                return (Convert.ToInt32((GetCodeOfTable(WordCode)*100)) + Tables[i].Word.Count); //50000 * 100 + 1 * 100 + 05 = 5000105
+            }
+        }
+        return 0;
+    }
+    public int GetWordID(string WordCode,int index) //5000101
+    {
+        for (int i = 0; i < Tables.Count; i++)
+        {
+            if (Tables[i].TableNameCode.Contains(WordCode))
+            {
+                return (Convert.ToInt32((GetCodeOfTable(WordCode) * 100)) + index); //50001 * 100  + 05 = 5000105
             }
         }
         return 0;
     }
 
-    public string GetNameOfTableByCode(string WgCode)
+    public string GetNameOfTableByCode(string WgCode) //پیش فرض
     {
         for (int i = 0; i < TablesName.Count ; i++)
         {
@@ -103,6 +122,29 @@ public class PublicWordsManager : MonoBehaviour
                 return TablesName[i].Name;
         }
         return null;
+    }
+   
+    public string GetWordGroupCode(int index) // make wg-01
+    {
+        if (index < 10)
+        {
+            return "wg-0" + index;
+        }
+        else
+        {
+            return "wg-" + index;
+        }
+    }
+    
+
+    string WordCode; 
+    public void RemoveWord(int index,int ListIndex)
+    {
+        GameObject tmp =  SingeltonManager.Instance.publicWordPool.pooledObjects[ListIndex].wordGroup[index];
+        WordCode = GetWordGroupCode(ListIndex+1);
+        SingeltonManager.Instance.wordGroupControler.RemoveWord(GetWordID(WordCode,index+1), WordCode);
+        tmp.SetActive(false);
+        
     }
 
 }

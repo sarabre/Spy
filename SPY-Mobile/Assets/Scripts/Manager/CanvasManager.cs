@@ -38,7 +38,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] RtlText TitlePubliclWord;
 
     [SerializeField] InputField AddedWord;
-    [SerializeField] InputField DeletedWordIndex;
+    [SerializeField] InputField DeletedWordIndex; //private
 
     [SerializeField] GameObject AlertBox;
     [SerializeField] Transform AlertPlace1;
@@ -52,12 +52,20 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] InputField UserName;
     [SerializeField] InputField PassWord;
 
+    [SerializeField] GameObject SuggestedToList;
+    [SerializeField] GameObject DeleteFromPublicList;
+
+    [SerializeField] InputField DeletedPublicWordIndex;
+    [SerializeField] InputField NewWordInSuggestion;
+
     [SerializeField] Text AdminWelcome;
     public string Welcome;
 
     private int CurrentPersonalListIndex;
     private float ShowAlertTimer = 1f;
     
+    private int CurrentPubliclListIndex;
+
     private float NormalPositionScroll = 1f;
 
     private ListContent NewListContent = new ListContent();
@@ -282,7 +290,7 @@ public class CanvasManager : MonoBehaviour
                 SingeltonManager.Instance.personalWordsManager.RemoveGroup(int.Parse(NewOrRemoveListNumber.text)-1);
             else
             {
-                ShowAlert(4004); // error for emphty name
+                ShowAlert(4003); // error for emphty name
                 return;
 
             }
@@ -342,33 +350,43 @@ public class CanvasManager : MonoBehaviour
 
     public void ShowPublicWords(int index)
     {
+        CurrentPubliclListIndex = index;
         SingeltonManager.Instance.poolManager.UpdatePublicWords(index);
         TitlePubliclWord.text = SingeltonManager.Instance.poolManager.NamePublicWordList(index);
         BodyPublicwordScroll.verticalNormalizedPosition = NormalPositionScroll;
         ResetScroolSize(index, ContentPublicword, false,true);
+        ShowIfAdmin((SingeltonManager.Instance.profile.UserSit == UserSituation.Admin));
         GotoPage(PublicWordBtnPage.name);
+    }
+
+   
+    public void ShowIfAdmin(bool IsAdmin)
+    {
+        
+            SuggestedToList.SetActive(!IsAdmin);
+            DeleteFromPublicList.SetActive(IsAdmin);
+       
     }
 
     public void Login(string PageName)
     {
-        // 4006 wait for some seconde
-        // 4007 no internet
-        // 4008 you are not admin
+        
+       
         StartCoroutine(DetermineUserSituation(PageName));
         
     }
-
+    // 4007 no internet
     IEnumerator DetermineUserSituation(string PageName)
     {
         SingeltonManager.Instance.wordGroupControler.CheckAdmin(UserName.text,PassWord.text);
 
         if (SingeltonManager.Instance.profile.UserSit == UserSituation.Unknown)
-            ShowAlert(4006);
+            ShowAlert(4006); // wait for some seconde
 
         yield return new WaitForSeconds(1f);
 
         if (SingeltonManager.Instance.profile.UserSit == UserSituation.Player)
-            ShowAlert(4008);
+            ShowAlert(4008); // you are not admin
 
         if (SingeltonManager.Instance.profile.UserSit == UserSituation.Admin)
         {
@@ -405,6 +423,29 @@ public class CanvasManager : MonoBehaviour
     {
         SingeltonManager.Instance.wordGroupControler.RemoveSuggestion(Info.word);
         tmp.SetActive(false);
+    }
+    public void RemoveFromPublicList()
+    {
+        try
+        {
+            SingeltonManager.Instance.publicWordsManager.RemoveWord(int.Parse(DeletedPublicWordIndex.text)-1, CurrentPubliclListIndex);
+
+            ShowAlert(4009); // For sea the correct word and situastion plz reload the game
+            MakeInputEmpty(DeletedPublicWordIndex);
+        }
+        catch
+        {
+            ShowAlert(4010); //rong name
+        }
+
+    }
+
+    public void SendSuggestion()
+    {
+        
+        SingeltonManager.Instance.suggestionManager.SendSuggestion(NewWordInSuggestion.text, SingeltonManager.Instance.publicWordsManager.GetWordGroupCode(Convert.ToInt32(CurrentPubliclListIndex+1)));
+        ShowAlert(4004); //suggestion succesed
+        MakeInputEmpty(NewWordInSuggestion);
     }
 }
 

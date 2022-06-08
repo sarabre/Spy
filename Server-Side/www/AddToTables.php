@@ -15,7 +15,7 @@ $WordID =  $_GET["WordID"]  ;
 $Word =  $_GET["Word"]  ;
 
 
-$sth = $conn->query("INSERT INTO `".$TableCode."`` VALUES ('".$WordID."', '".$Word."');");
+$sth = $conn->query("INSERT INTO `".$TableCode."` VALUES ('".$WordID."', '".$Word."');");
 $sth->setFetchMode(PDO::FETCH_ASSOC);
 
 

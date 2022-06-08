@@ -13,4 +13,5 @@ public class IDGenerator : MonoBehaviour
     // suggestion identity
     public string word;
     public string WordGroupCode;
+    
 }

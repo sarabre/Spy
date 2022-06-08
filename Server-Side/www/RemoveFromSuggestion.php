@@ -12,3 +12,6 @@ $Word =  $_GET["Word"]  ;
 
 $sth = $conn->query("DELETE FROM `suggested-words` WHERE word = '".$Word."'");
 $sth->setFetchMode(PDO::FETCH_ASSOC);
+
+
+?>

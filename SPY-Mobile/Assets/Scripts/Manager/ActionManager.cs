@@ -80,4 +80,14 @@ public class ActionManager : MonoBehaviour
         SingeltonManager.Instance.canvasManager.RejectSuggestion(gameObject.transform.parent.parent.gameObject, gameObject.transform.parent.GetComponentInParent<IDGenerator>());
     }
 
+    public void RemoveFromPublicList()
+    {
+        SingeltonManager.Instance.canvasManager.RemoveFromPublicList();
+    }
+
+    public void SendSuggestion()
+    {
+        SingeltonManager.Instance.canvasManager.SendSuggestion();
+    }
+
 }

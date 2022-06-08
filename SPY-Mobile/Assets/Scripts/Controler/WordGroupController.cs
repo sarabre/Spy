@@ -12,12 +12,7 @@ public class WordGroupController : MonoBehaviour
     public void Awake()
     {
         StartCoroutine(GetData());
-        //SendSuggestedWord("suggestedWord2", "wg-02");
        
-        
-        
-
-        //RemoveWord(5000102, "wg-01");
     }
 
     
@@ -314,10 +309,9 @@ public class WordGroupController : MonoBehaviour
     {
        
         string hash = HashInput(word);
-        string post_url = AddSuggestedWordURL + "TableCode=" + WgCode.Replace(" ", String.Empty) + "&WordID=" + wordID + "&Word=" + word.Replace(" ", String.Empty) + "&TableID=" + WgID;
+        string post_url = AddSuggestedWordURL + "TableCode=" + WgCode.Replace(" ", String.Empty) + "&WordID=" + wordID + "&Word=" + word + "&TableID=" + WgID;
         UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
         yield return hs_post.SendWebRequest();
-        Debug.Log(post_url);
         if (hs_post.error != null)
             Debug.Log("There was an error posting the high score: " + hs_post.error);
     }
@@ -342,8 +336,7 @@ public class WordGroupController : MonoBehaviour
     {
        
         string hash = HashInput(word);
-        string post_url = RemoveSuggestedWordURL + "Word=" + word.Replace(" ", String.Empty);
-        Debug.Log(post_url);
+        string post_url = RemoveSuggestedWordURL + "Word=" + word;
         UnityWebRequest hs_post = UnityWebRequest.Post(post_url, hash);
         yield return hs_post.SendWebRequest();
         if (hs_post.error != null)
