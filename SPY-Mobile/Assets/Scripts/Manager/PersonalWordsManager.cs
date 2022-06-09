@@ -53,4 +53,13 @@ public class PersonalWordsManager : MonoBehaviour
         WordsList.RemoveAt(index);
     }
 
+    public void GetAllPersonalTable(ref List<string> Items)
+    {
+        foreach (var item in WordsList)
+        {
+            if(item.Words.Count != 0)
+            Items.Add(item.ListName);
+        }
+    }
+
 }

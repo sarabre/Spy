@@ -146,7 +146,13 @@ public class PublicWordsManager : MonoBehaviour
         tmp.SetActive(false);
         
     }
-
+    public void GetAllPublicTable(ref List<string> Items)
+    {
+        foreach (var item in SingeltonManager.Instance.wordGroupControler.TablesNameFromDataBase)
+        {
+            Items.Add(item.Name);
+        }
+    }
 }
 
 
@@ -179,3 +185,4 @@ public class SuggestedWord
     public string WgName; //wg-01
     public int WgCode; //5000101
 }
+

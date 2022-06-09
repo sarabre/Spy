@@ -10,6 +10,7 @@ public class ActionManager : MonoBehaviour
             return gameObject.GetComponent<IDGenerator>().ListID;
         }
     }
+    
 
     #region Word Manager - part
     public void ChangePage(GameObject Page)
@@ -100,5 +101,23 @@ public class ActionManager : MonoBehaviour
         SingeltonManager.Instance.canvasManager.NewPlayer();
     }
 
+    public void FindAllList()
+    {
+        SingeltonManager.Instance.canvasManager.FindAllList();
+    }
+
+    public void ChooseTime(int BtnID)
+    {
+        SingeltonManager.Instance.canvasManager.ChooseTime(BtnID);
+    }
+
+    public void DetermineSpyNumber()
+    {
+        SingeltonManager.Instance.canvasManager.DetermineSpyNumber();
+    }
+    public void StartScoredGame(GameObject page)
+    {
+        SingeltonManager.Instance.canvasManager.StartScoredGame(page.name);
+    }
     #endregion
 }

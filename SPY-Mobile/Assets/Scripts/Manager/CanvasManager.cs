@@ -459,7 +459,24 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] Transform PlayerFather; // Content in grid
     [SerializeField] List<GameObject> Players;
 
+    [SerializeField] Dropdown WordGroupList;
+    [SerializeField] Dropdown RoundNumber;
+    [SerializeField] Dropdown SpyNumberDp;
 
+    float Time;
+    int PossibleSpyNumber;
+    List<string> TableName = new List<string>();
+
+    public string AllTableItem;
+    public string JustPublicTableItem;
+    public string JustPersonalTableItem;
+
+    [SerializeField] List<GameObject> Timers;
+    [SerializeField] Color ChooseBtnColor;
+    [SerializeField] Color ChooseTextColor;
+    [SerializeField] Color TextColor;
+
+    Player player = new Player();
 
     public void NewPlayer()
     {
@@ -480,8 +497,134 @@ public class CanvasManager : MonoBehaviour
        
     }
 
-    //public void Add
-    #endregion
+    public void FindAllList()
+    {
+
+        SortWordGroupList();
+
+        foreach (string item in TableName)
+        {
+            WordGroupList.options.Add(new Dropdown.OptionData() { text = item });
+        }
+    }
+
+    public void SortWordGroupList()
+    {
+        WordGroupList.options.Clear();
+
+        TableName.Add(AllTableItem);
+        TableName.Add(JustPublicTableItem);
+        TableName.Add(JustPersonalTableItem);
+
+        SingeltonManager.Instance.personalWordsManager.GetAllPersonalTable(ref TableName);
+        SingeltonManager.Instance.publicWordsManager.GetAllPublicTable(ref TableName);
+    }
+
+    public void ChooseTime(int index)
+    {
+        //make all black
+        foreach (var item in Timers)
+        {
+            item.GetComponent<Image>().color = Color.white;
+            item.GetComponentInChildren<RtlText>().color = TextColor;
+
+        }
+        //click 
+        Timers[index].GetComponent<Image>().color = ChooseBtnColor;
+        Timers[index].GetComponentInChildren<RtlText>().color = ChooseTextColor;
+        Time = index * 60 + 120;
+    }
+
+    public void DetermineSpyNumber()
+    {
+        PossibleSpyNumber++;
+        
+        if (PossibleSpyNumber > 3)
+        {
+            SpyNumberDp.options.Add(new Dropdown.OptionData() { text = (PossibleSpyNumber-2).ToString() });
+        }
+        
+        
+    }
+
+    public void StartScoredGame(string page)
+    {
+        //try
+       // {
+            #region check spy number  and send
+
+        
+            int spynumber = int.Parse(SpyNumberDp.options[SpyNumberDp.value].text);
+            if (spynumber == 0)
+            {
+                ShowAlert(4012); //choose spy number
+                return;
+            }
+            else
+                SingeltonManager.Instance.team.NumberOfSpy = spynumber;
+
+            #endregion
+
+            #region Send Player
+
+            if (PlayerFather.childCount <= 2)
+            {
+                ShowAlert(4016); // more than 2 player
+                return;
+            }
+            else
+                foreach (var item in PlayerFather.GetComponentsInChildren<InputField>())
+                {
+                    if (item.text != string.Empty)
+                        SingeltonManager.Instance.team.AddPlayer(item.text);
+                    else
+                        SingeltonManager.Instance.team.AddPlayer(item.placeholder.ToString());
+
+                }
+            #endregion
+
+            #region send round
+
+            int Round = int.Parse(RoundNumber.options[RoundNumber.value].text);
+            if (Round == 0)
+            {
+                ShowAlert(4014);
+                return;
+            }
+            else
+                SingeltonManager.Instance.team.NumberOfSpy = Round;
+            #endregion
+
+            #region send Time
+
+            if (Time == 0)
+            {
+                ShowAlert(4013); // choose time
+                return;
+            }
+            else
+                SingeltonManager.Instance.team.RoundDuration = Time;
+            #endregion
+
+            #region send word
+
+            SingeltonManager.Instance.GameManager.MakeListOfWord(WordGroupList.value);
+
+            #endregion
+
+            GotoPage(page);
+       // }
+       // catch
+       // {
+       //     ShowAlert(4015); //rong information
+       // }
+
+
+
+
+    }
+
+#endregion
 }
 
 
