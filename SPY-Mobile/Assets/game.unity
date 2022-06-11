@@ -6491,6 +6491,13 @@ MonoBehaviour:
   ChooseBtnColor: {r: 0.6313726, g: 0, b: 1, a: 1}
   ChooseTextColor: {r: 0.5803922, g: 0.26666668, b: 0.8392157, a: 1}
   TextColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  GamePlayText: {fileID: 1215207222}
+  GamePlayBtn: {fileID: 1430051373}
+  GivePhone: "\u0628\u062F\u0647\u064A\u062F"
+  GivePhoneTo: "\u06AF\u0648\u0634\u064A \u0631\u0627 \u0628\u0647 "
+  Spy: "\u062C\u0627\u0633\u0648\u0633"
+  Iam: "\u0647\u0633\u062A\u0645"
+  Next: "\u0628\u0639\u062F\u064A"
 --- !u!114 &492470207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6674,6 +6681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80e0f777f9cb07c4b949a65e53f74e3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  players: []
   NumberOfPlayer: 0
   NumberOfSpy: 0
   IndexOfSpy: 0
@@ -6694,6 +6702,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Words: []
   allWords: []
+  CurrentGameSelectedWordIndex: 
+  CurrentRoundSpyIndex: 
+  PlayersKnowThierRoleCount: 0
 --- !u!1 &496937527
 GameObject:
   m_ObjectHideFlags: 0
@@ -29751,18 +29762,6 @@ MonoBehaviour:
       - m_Target: {fileID: 2077010814}
         m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
         m_MethodName: NewPlayer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2077010814}
-        m_TargetAssemblyTypeName: ActionManager, Assembly-CSharp
-        m_MethodName: DetermineSpyNumber
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -476,6 +476,15 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] Color ChooseTextColor;
     [SerializeField] Color TextColor;
 
+    [SerializeField] RtlText GamePlayText;
+    [SerializeField] RtlText GamePlayBtn;
+
+    public string GivePhone;              //
+    public string GivePhoneTo;            //
+    public string Spy;                    //  For Persian writing
+    public string Iam;                    //
+    public string Next;                   //
+
     Player player = new Player();
 
     public void NewPlayer()
@@ -486,6 +495,7 @@ public class CanvasManager : MonoBehaviour
             {
                 GameObject tmp = Instantiate(Player, PlayerFather);
                 Players.Add(tmp);
+                DetermineSpyNumber();
             }
             else
             {
@@ -549,12 +559,40 @@ public class CanvasManager : MonoBehaviour
 
     public void StartScoredGame(string page)
     {
-        //try
-       // {
+        try
+        {
+
+            #region send round
+
+            int Round = int.Parse(RoundNumber.options[RoundNumber.value].text);
+            if (Round == 0)
+            {
+                ShowAlert(4014);
+                return;
+            }
+            else
+                SingeltonManager.Instance.team.NumberOfRound = Round;
+            #endregion
+
+            #region send word
+
+            if (WordGroupList.value != 0)
+                SingeltonManager.Instance.GameManager.MakeListOfWord(WordGroupList.value);
+            else
+                SingeltonManager.Instance.GameManager.MakeListOfWord(0);
+
+            if (SingeltonManager.Instance.GameManager.Words.Count < Round)
+            {
+                ShowAlert(4016); //words count is less than zero
+                return;
+            }
+
+            #endregion
+
             #region check spy number  and send
 
-        
-            int spynumber = int.Parse(SpyNumberDp.options[SpyNumberDp.value].text);
+
+            int spynumber = SpyNumberDp.value + 1;
             if (spynumber == 0)
             {
                 ShowAlert(4012); //choose spy number
@@ -563,6 +601,17 @@ public class CanvasManager : MonoBehaviour
             else
                 SingeltonManager.Instance.team.NumberOfSpy = spynumber;
 
+            #endregion
+
+            #region send Time
+
+            if (Time == 0)
+            {
+                ShowAlert(4013); // choose time
+                return;
+            }
+            else
+                SingeltonManager.Instance.team.RoundDuration = Time;
             #endregion
 
             #region Send Player
@@ -583,44 +632,46 @@ public class CanvasManager : MonoBehaviour
                 }
             #endregion
 
-            #region send round
-
-            int Round = int.Parse(RoundNumber.options[RoundNumber.value].text);
-            if (Round == 0)
-            {
-                ShowAlert(4014);
-                return;
-            }
-            else
-                SingeltonManager.Instance.team.NumberOfSpy = Round;
-            #endregion
-
-            #region send Time
-
-            if (Time == 0)
-            {
-                ShowAlert(4013); // choose time
-                return;
-            }
-            else
-                SingeltonManager.Instance.team.RoundDuration = Time;
-            #endregion
-
-            #region send word
-
-            SingeltonManager.Instance.GameManager.MakeListOfWord(WordGroupList.value);
-
-            #endregion
 
             GotoPage(page);
-       // }
-       // catch
-       // {
-       //     ShowAlert(4015); //rong information
-       // }
+
+            SingeltonManager.Instance.GameManager.ManageGame();
+        }
+        catch
+        {
+            ShowAlert(4015); //rong information
+        }
 
 
 
+
+    }
+
+    public void DeterminePlayerName(string name)
+    {
+        GamePlayText.text = $"{GivePhoneTo} {name} {GivePhone}.";
+        GamePlayBtn.text = Iam;
+    }
+
+    public void ShowPlayerRole(bool IsSpy , string word)
+    {
+        if (IsSpy)
+        {
+            GamePlayText.text = $"{Spy}.";
+        }
+        else
+        {
+            GamePlayText.text = $"{word}.";
+        }
+        GamePlayBtn.text = Next;
+    }
+    public void NextStepInGamePlay() //Next Btn
+    {
+
+    }
+
+    public void ImInGamePlay() // I am Btn
+    {
 
     }
 

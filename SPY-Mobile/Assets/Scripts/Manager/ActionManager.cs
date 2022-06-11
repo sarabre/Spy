@@ -111,10 +111,7 @@ public class ActionManager : MonoBehaviour
         SingeltonManager.Instance.canvasManager.ChooseTime(BtnID);
     }
 
-    public void DetermineSpyNumber()
-    {
-        SingeltonManager.Instance.canvasManager.DetermineSpyNumber();
-    }
+    
     public void StartScoredGame(GameObject page)
     {
         SingeltonManager.Instance.canvasManager.StartScoredGame(page.name);

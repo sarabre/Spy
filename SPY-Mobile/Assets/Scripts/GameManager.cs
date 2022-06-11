@@ -1,15 +1,22 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public List<string> Words = new List<string>();
-
+   
     public List<AllWords> allWords = new List<AllWords>();
     AllWords allwords = new AllWords();
 
-   
+    public List<int> CurrentGameSelectedWordIndex = new List<int>();
+
+    public List<int> CurrentRoundSpyIndex = new List<int>();
+
+    public int PlayersKnowThierRoleCount = 0;
+    bool IsSpy;
+
     public void MakeListOfWord(int index)
     {
         for (int i = 0; i < 3; i++) // All //AllPublic //AllPersonal
@@ -56,13 +63,98 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        Words.Clear();
+
         foreach (var item in allWords[index].Words)
         {
             this.Words.Add(item);
         }
+
+
+       
     }
 
+    public void WhoIsSpy()
+    {
+        if (CurrentRoundSpyIndex.Count != SingeltonManager.Instance.team.NumberOfSpy)
+        {
+            int x = UnityEngine.Random.Range(0, SingeltonManager.Instance.team.NumberOfPlayer);
+            foreach (var item in CurrentRoundSpyIndex)
+            {
+                if (x == item)
+                {
+                    WhoIsSpy();
+                   
+                }
+                
+            }
 
+            CurrentRoundSpyIndex.Add(x);
+
+        }
+        else
+        {
+            CurrentRoundSpyIndex.Sort();
+            return;
+        }
+                    WhoIsSpy();
+    }
+    public void ManageGame()
+    {
+        //determine Spy Index
+        WhoIsSpy();
+
+        //manage GamePlay Panel
+        GivePhoneToPlayer(0);
+
+        //StartCoroutine(ManagingTime());
+    }
+    IEnumerator ManagingTime()
+    {
+        yield return new WaitForSeconds(2f);
+    }
+
+    public void GivePhoneToPlayer(int index)
+    {
+        SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[index].name);
+        PlayersKnowThierRoleCount++;
+    }
+
+    public void NextStepInGamePlay() //Next Btn
+    {
+
+    }
+
+    public void ImInGamePlay() // I am Btn
+    {
+      
+        foreach (var item in CurrentRoundSpyIndex)
+        {
+            if(PlayersKnowThierRoleCount == item)
+            {
+                IsSpy = true;
+                return;
+            }
+            else
+            {
+                IsSpy = false;
+            }
+        }
+        
+        SingeltonManager.Instance.canvasManager.ShowPlayerRole(IsSpy, ThisRoundWord());
+    }
+
+    public string ThisRoundWord()
+    {
+        int WordIndex = UnityEngine.Random.Range(0, Words.Count);
+        foreach (var item in CurrentGameSelectedWordIndex)
+        {
+            //if(CurrentGameSelectedWordIndex == Words.Count) //should show word
+           
+        }
+        CurrentGameSelectedWordIndex.Add(WordIndex);
+        return "";
+    }
 }
 
 [Serializable]
