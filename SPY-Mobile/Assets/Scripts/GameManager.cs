@@ -14,8 +14,12 @@ public class GameManager : MonoBehaviour
 
     public List<int> CurrentRoundSpyIndex = new List<int>();
 
-    public int PlayersKnowThierRoleCount = 0;
+    public int PlayersKnowThierRoleCount = -1;
     bool IsSpy;
+    string word;
+    bool IsLastPlayer;
+
+    public int PlayedRound = 0;
 
     public void MakeListOfWord(int index)
     {
@@ -84,7 +88,7 @@ public class GameManager : MonoBehaviour
                 if (x == item)
                 {
                     WhoIsSpy();
-                   
+                    return;
                 }
                 
             }
@@ -97,7 +101,7 @@ public class GameManager : MonoBehaviour
             CurrentRoundSpyIndex.Sort();
             return;
         }
-                    WhoIsSpy();
+        WhoIsSpy();
     }
     public void ManageGame()
     {
@@ -105,43 +109,70 @@ public class GameManager : MonoBehaviour
         WhoIsSpy();
 
         //manage GamePlay Panel
-        GivePhoneToPlayer(0);
+        GivePhoneToPlayer();
 
-        //StartCoroutine(ManagingTime());
-    }
-    IEnumerator ManagingTime()
-    {
-        yield return new WaitForSeconds(2f);
+        //create table
+        SingeltonManager.Instance.canvasManager.CreateTableRow();
+
+        PlayedRound++;
+
     }
 
-    public void GivePhoneToPlayer(int index)
+    int sec;
+    int min;
+    public IEnumerator ManagingTime()
     {
-        SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[index].name);
+        float Duration = SingeltonManager.Instance.team.RoundDuration;
+        for (int i = 0; i < SingeltonManager.Instance.team.RoundDuration; i++)
+        {
+            Duration--;
+            DetermindSecond(Duration,out min,out sec);
+            yield return new WaitForSeconds(1f);
+            SingeltonManager.Instance.canvasManager.Timer(sec,min);
+        }
+     
+    }
+
+    public void DetermindSecond(float Duration,out int min,out int sec )
+    {
+        
+        min = (int)Math.Floor(Duration / 60);
+        sec = (int)(Duration - min*60);
+    }
+
+    public void GivePhoneToPlayer()
+    {
+        SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[PlayersKnowThierRoleCount].name);
         PlayersKnowThierRoleCount++;
     }
 
-    public void NextStepInGamePlay() //Next Btn
-    {
-
-    }
+   
 
     public void ImInGamePlay() // I am Btn
     {
-      
+        
         foreach (var item in CurrentRoundSpyIndex)
         {
             if(PlayersKnowThierRoleCount == item)
             {
                 IsSpy = true;
-                return;
+                break;
             }
             else
             {
                 IsSpy = false;
             }
         }
-        
-        SingeltonManager.Instance.canvasManager.ShowPlayerRole(IsSpy, ThisRoundWord());
+
+        if(word == null)
+        word = ThisRoundWord();
+
+        if (PlayersKnowThierRoleCount == SingeltonManager.Instance.team.players.Count)
+            IsLastPlayer = true;
+
+        SingeltonManager.Instance.canvasManager.ShowPlayerRole(IsSpy,word ,IsLastPlayer);
+
+        IsLastPlayer = false;
     }
 
     public string ThisRoundWord()
@@ -149,11 +180,26 @@ public class GameManager : MonoBehaviour
         int WordIndex = UnityEngine.Random.Range(0, Words.Count);
         foreach (var item in CurrentGameSelectedWordIndex)
         {
-            //if(CurrentGameSelectedWordIndex == Words.Count) //should show word
-           
+            if (WordIndex == item)
+            {
+                ThisRoundWord(); 
+            }
+
+
         }
         CurrentGameSelectedWordIndex.Add(WordIndex);
-        return "";
+        return Words[WordIndex];
+    }
+   
+    public void GiveResultOfThisRound(int SpyScore) // -1 for lose and 1 for win
+    {
+        StopAllCoroutines();
+       
+        foreach (var item in CurrentRoundSpyIndex)
+            {
+            SingeltonManager.Instance.team.players[item].Score += SpyScore;
+        }
+        
     }
 }
 

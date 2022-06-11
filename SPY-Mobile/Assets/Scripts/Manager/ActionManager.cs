@@ -116,5 +116,16 @@ public class ActionManager : MonoBehaviour
     {
         SingeltonManager.Instance.canvasManager.StartScoredGame(page.name);
     }
+
+    public void NextStepInGamePlay(GameObject page)
+    {
+        SingeltonManager.Instance.canvasManager.NextStepInGamePlay(page.name);
+    }
+    public void RoundEnd(int SpyScore)
+    {
+        SingeltonManager.Instance.canvasManager.RoundEnd(SpyScore);
+    }
+
+    
     #endregion
 }

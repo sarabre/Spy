@@ -478,15 +478,31 @@ public class CanvasManager : MonoBehaviour
 
     [SerializeField] RtlText GamePlayText;
     [SerializeField] RtlText GamePlayBtn;
+    [SerializeField] RtlText GamePlayTimer;
+    [SerializeField] RtlText WinerPlayers;
+    [SerializeField] RtlText NumberOfRound;
 
     public string GivePhone;              //
     public string GivePhoneTo;            //
     public string Spy;                    //  For Persian writing
     public string Iam;                    //
     public string Next;                   //
+    public string Player1;                //
+    public string Start;                  //
+    public string ResultOfRound;          //
+    
+
+    private bool IsIAm = true;
+    private bool IsLastPlayer = false;
+    private int MaxScore;
+    private List<string> MaxScorePlayerName = new List<string>();
 
     Player player = new Player();
 
+    [SerializeField] GameObject TablePanel;
+    [SerializeField] GameObject RowPlayer;
+    [SerializeField] Transform RowPlayerFather;
+    [SerializeField] List<GameObject> RowPlayers = new List<GameObject>();
     public void NewPlayer()
     {
         if ( Players.Count < 8)
@@ -627,15 +643,17 @@ public class CanvasManager : MonoBehaviour
                     if (item.text != string.Empty)
                         SingeltonManager.Instance.team.AddPlayer(item.text);
                     else
-                        SingeltonManager.Instance.team.AddPlayer(item.placeholder.ToString());
+                        SingeltonManager.Instance.team.AddPlayer(Player1);
 
                 }
             #endregion
 
 
-            GotoPage(page);
 
             SingeltonManager.Instance.GameManager.ManageGame();
+
+            GotoPage(page);
+
         }
         catch
         {
@@ -653,29 +671,102 @@ public class CanvasManager : MonoBehaviour
         GamePlayBtn.text = Iam;
     }
 
-    public void ShowPlayerRole(bool IsSpy , string word)
+    public void ShowPlayerRole(bool IsSpy , string word,bool IsLastPlayer)
     {
         if (IsSpy)
         {
-            GamePlayText.text = $"{Spy}.";
+            GamePlayText.text = $"{Spy}";
         }
         else
         {
-            GamePlayText.text = $"{word}.";
+            GamePlayText.text = $"{word}";
         }
-        GamePlayBtn.text = Next;
+
+        if(!IsLastPlayer)
+            GamePlayBtn.text = Next;
+        else
+            GamePlayBtn.text = Start;
+
+        this.IsLastPlayer = IsLastPlayer;
     }
-    public void NextStepInGamePlay() //Next Btn
+    public void NextStepInGamePlay(string page) //Next Btn
     {
+        if(IsLastPlayer)
+        {
+            GotoPage(page);
+            StartCoroutine(SingeltonManager.Instance.GameManager.ManagingTime());
+            return;
+        }
 
+        if(IsIAm)
+            SingeltonManager.Instance.GameManager.ImInGamePlay();
+        else
+            SingeltonManager.Instance.GameManager.GivePhoneToPlayer();
+        IsIAm = !IsIAm;
     }
 
-    public void ImInGamePlay() // I am Btn
+    public void Timer(int min,int second)
     {
-
+        GamePlayTimer.text = $"{min.ToString()} : {second.ToString()}";
+        if(min == 0 && second == 0)
+        {
+            RoundEnd(1);
+        }
     }
 
-#endregion
+    public void RoundEnd(int SpyScore)
+    {
+        SingeltonManager.Instance.GameManager.GiveResultOfThisRound(SpyScore);
+        ShowScoredInTable();
+        GotoPage(TablePanel.name);
+    }
+    public void ShowScoredInTable()
+    {
+        NumberOfRound.text = $"{ResultOfRound} {SingeltonManager.Instance.GameManager.PlayedRound}";
+
+
+        MaxScorePlayerName.Clear();
+        MaxScore = 0;
+        int i = 0;
+
+        foreach (var player in RowPlayers)
+        {
+            if ( SingeltonManager.Instance.team.players[i].Score > MaxScore )
+            {
+                MaxScore = SingeltonManager.Instance.team.players[i].Score;
+                MaxScorePlayerName.Clear();
+                MaxScorePlayerName.Add(SingeltonManager.Instance.team.players[i].name);
+            }
+
+            if (MaxScore == SingeltonManager.Instance.team.players[i].Score)
+            {
+                MaxScorePlayerName.Add(SingeltonManager.Instance.team.players[i].name);
+            }
+
+            player.transform.GetChild(1).GetComponent<RtlText>().text = SingeltonManager.Instance.team.players[i].Score.ToString();
+            i++;
+        }
+
+        WinerPlayers.text = string.Empty;
+        foreach (var PlayerName in MaxScorePlayerName)
+        {
+            WinerPlayers.text += " "+ PlayerName;
+        }
+    }
+
+    public void CreateTableRow()
+    {
+        for (int i = 0; i < SingeltonManager.Instance.team.NumberOfPlayer ; i++)
+        {
+            GameObject tmp = Instantiate(RowPlayer, RowPlayerFather);
+            tmp.transform.GetChild(0).GetComponent<RtlText>().text = SingeltonManager.Instance.team.players[i].name;
+            RowPlayers.Add(tmp);
+        }
+       
+    }
+
+
+    #endregion
 }
 
 
