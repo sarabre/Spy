@@ -30,6 +30,8 @@ public class PersonalWordsManager : MonoBehaviour
         {
             WordsList = listPersonalWords.WordsList;
         }
+
+       // string json = JsonUtility.ToJson(Resources.Load<UnityEngine.Object>("PersonalList-SO"));
     }
 
     public void AddWord(int ListIndex,string word)

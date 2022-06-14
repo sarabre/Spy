@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 
     public List<int> CurrentRoundSpyIndex = new List<int>();
 
-    public int PlayersKnowThierRoleCount = -1;
+    int PlayersKnowThierRoleCount = -1;
     bool IsSpy;
     string word;
     bool IsLastPlayer;
@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour
 
     public void WhoIsSpy()
     {
+      
         if (CurrentRoundSpyIndex.Count != SingeltonManager.Instance.team.NumberOfSpy)
         {
             int x = UnityEngine.Random.Range(0, SingeltonManager.Instance.team.NumberOfPlayer);
@@ -112,6 +113,7 @@ public class GameManager : MonoBehaviour
         GivePhoneToPlayer();
 
         //create table
+        if(PlayedRound == 0)
         SingeltonManager.Instance.canvasManager.CreateTableRow();
 
         PlayedRound++;
@@ -123,17 +125,27 @@ public class GameManager : MonoBehaviour
     public IEnumerator ManagingTime()
     {
         float Duration = SingeltonManager.Instance.team.RoundDuration;
+        SingeltonManager.Instance.canvasManager.Timer(0, (int)Duration/60);
         for (int i = 0; i < SingeltonManager.Instance.team.RoundDuration; i++)
         {
             Duration--;
-            DetermindSecond(Duration,out min,out sec);
+            DetermindSecond(Duration,ref min,ref sec);
             yield return new WaitForSeconds(1f);
             SingeltonManager.Instance.canvasManager.Timer(sec,min);
         }
-     
+
+      //  SingeltonManager.Instance.canvasManager.RoundEnd(1); // if -0:0
+      //  StopAllCoroutines();
     }
 
-    public void DetermindSecond(float Duration,out int min,out int sec )
+    public bool WasLastRound()
+    {
+        if (PlayedRound == SingeltonManager.Instance.team.NumberOfRound)
+            return true;
+        return false;
+    }
+
+    public void DetermindSecond(float Duration,ref int min,ref int sec )
     {
         
         min = (int)Math.Floor(Duration / 60);
@@ -142,8 +154,8 @@ public class GameManager : MonoBehaviour
 
     public void GivePhoneToPlayer()
     {
-        SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[PlayersKnowThierRoleCount].name);
         PlayersKnowThierRoleCount++;
+        SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[PlayersKnowThierRoleCount].name);
     }
 
    
@@ -167,7 +179,7 @@ public class GameManager : MonoBehaviour
         if(word == null)
         word = ThisRoundWord();
 
-        if (PlayersKnowThierRoleCount == SingeltonManager.Instance.team.players.Count)
+        if (PlayersKnowThierRoleCount == SingeltonManager.Instance.team.players.Count-1)
             IsLastPlayer = true;
 
         SingeltonManager.Instance.canvasManager.ShowPlayerRole(IsSpy,word ,IsLastPlayer);
@@ -193,13 +205,23 @@ public class GameManager : MonoBehaviour
    
     public void GiveResultOfThisRound(int SpyScore) // -1 for lose and 1 for win
     {
-        StopAllCoroutines();
        
         foreach (var item in CurrentRoundSpyIndex)
-            {
+        {
             SingeltonManager.Instance.team.players[item].Score += SpyScore;
         }
         
+    }
+
+    public void NextRound()
+    {
+        CurrentRoundSpyIndex.Clear();
+        PlayersKnowThierRoleCount = -1;
+        IsLastPlayer = false;
+        min = 0;
+        sec = 0;
+        word = null;
+        ManageGame();
     }
 }
 
