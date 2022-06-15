@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class PersonalWordsManager : MonoBehaviour
@@ -21,26 +22,42 @@ public class PersonalWordsManager : MonoBehaviour
     public int BtnCount = 12;
     public int WordCount = 60;
 
+    string serializedJson;
 
     // should Quantify in RUN time
     public void Awake()
     {
-        ListPersonalWords listPersonalWords = Resources.Load<ListPersonalWords>("PersonalList-SO");
-        if (listPersonalWords != null)
+        if (PlayerPrefs.GetString("PersonalWord") == "") //if is the first time ...
         {
-            WordsList = listPersonalWords.WordsList;
+            ListPersonalWords listPersonalWords = Resources.Load<ListPersonalWords>("PersonalList-SO");
+            if (listPersonalWords != null)
+            {
+                WordsList = listPersonalWords.WordsList;
+            }
         }
-
-       // string json = JsonUtility.ToJson(Resources.Load<UnityEngine.Object>("PersonalList-SO"));
+        else
+        {
+            //get json and convert to list
+            serializedJson = PlayerPrefs.GetString("PersonalWord");
+            WordsList = JsonConvert.DeserializeObject<List<ListContent>>(serializedJson);
+            
+        }
     }
 
+    public void SaveData()
+    {
+        serializedJson = JsonConvert.SerializeObject(WordsList, Formatting.None);
+        PlayerPrefs.SetString("PersonalWord", serializedJson);
+    }
     public void AddWord(int ListIndex,string word)
     {
         WordsList[ListIndex].Words.Add(word);
+        SaveData();
     }
     public void RemoveWord(int ListIndex,int index)
     {
         WordsList[ListIndex].Words.RemoveAt(index);
+        SaveData();
     }
     
     public void AddGroup(string name)
@@ -48,11 +65,13 @@ public class PersonalWordsManager : MonoBehaviour
         listContentForNewGroup = new ListContent();
         listContentForNewGroup.ListName = name;
         WordsList.Add(listContentForNewGroup);
+        SaveData();
     }
 
     public void RemoveGroup(int index)
     {
         WordsList.RemoveAt(index);
+        SaveData();
     }
 
     public void GetAllPersonalTable(ref List<string> Items)

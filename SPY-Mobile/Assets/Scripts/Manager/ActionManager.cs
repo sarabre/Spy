@@ -101,34 +101,53 @@ public class ActionManager : MonoBehaviour
         SingeltonManager.Instance.canvasManager.NewPlayer();
     }
 
-    public void FindAllList()
+    public void FindAllList(bool IsScored)
     {
-        SingeltonManager.Instance.canvasManager.FindAllList();
+        SingeltonManager.Instance.canvasManager.FindAllList(IsScored);
     }
 
-    public void ChooseTime(int BtnID)
+    public void ChooseScoredTime(int BtnID)
     {
-        SingeltonManager.Instance.canvasManager.ChooseTime(BtnID);
+        SingeltonManager.Instance.canvasManager.ChooseTime(BtnID,true);
     }
 
-    
+    public void ChooseNornalTime(int BtnID)
+    {
+        SingeltonManager.Instance.canvasManager.ChooseTime(BtnID, false);
+    }
+
     public void StartScoredGame(GameObject page)
     {
         SingeltonManager.Instance.canvasManager.StartScoredGame(page.name);
     }
 
-    public void NextStepInGamePlay(GameObject page)
+    public void StartNormalGame(GameObject page)
     {
-        SingeltonManager.Instance.canvasManager.NextStepInGamePlay(page.name);
+        SingeltonManager.Instance.canvasManager.StartNormalGame(page.name);
+    }
+
+    public void NextStepInGamePlayScored(GameObject page)
+    {
+        SingeltonManager.Instance.canvasManager.NextStepInGamePlay(page.name,true);
+    }
+    public void NextStepInGamePlayNormal(GameObject page)
+    {
+        SingeltonManager.Instance.canvasManager.NextStepInGamePlay(page.name,false);
     }
     public void RoundEnd(int SpyScore)
     {
         SingeltonManager.Instance.canvasManager.RoundEnd(SpyScore);
     }
 
-    public void NextRound(GameObject page)
+    public void NextScoredRound(GameObject page)
     {
-        SingeltonManager.Instance.canvasManager.NextRound(page.name);
+        SingeltonManager.Instance.canvasManager.NextRound(page.name,true);
+    }
+
+    public void NextNormalRound(GameObject page)
+    {
+        SingeltonManager.Instance.canvasManager.StopNormalGame(); //stop coroutine
+        SingeltonManager.Instance.canvasManager.NextRound(page.name,false);
     }
 
     #endregion

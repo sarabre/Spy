@@ -110,11 +110,22 @@ public class GameManager : MonoBehaviour
         WhoIsSpy();
 
         //manage GamePlay Panel
-        GivePhoneToPlayer();
+        GivePhoneToPlayer(true);
 
         //create table
         if(PlayedRound == 0)
         SingeltonManager.Instance.canvasManager.CreateTableRow();
+
+        PlayedRound++;
+    }
+
+    public void ManageNormalGame()
+    {
+        //determine Spy Index
+        WhoIsSpy();
+
+        //manage GamePlay Panel
+        GivePhoneToPlayer(false);
 
         PlayedRound++;
 
@@ -122,22 +133,28 @@ public class GameManager : MonoBehaviour
 
     int sec;
     int min;
-    public IEnumerator ManagingTime()
+    public IEnumerator ManagingTime(bool IsScored) //Scored
     {
         float Duration = SingeltonManager.Instance.team.RoundDuration;
-        SingeltonManager.Instance.canvasManager.Timer(0, (int)Duration/60);
+        SingeltonManager.Instance.canvasManager.Timer(0, (int)Duration/60, IsScored);
         for (int i = 0; i < SingeltonManager.Instance.team.RoundDuration; i++)
         {
             Duration--;
             DetermindSecond(Duration,ref min,ref sec);
             yield return new WaitForSeconds(1f);
-            SingeltonManager.Instance.canvasManager.Timer(sec,min);
+            SingeltonManager.Instance.canvasManager.Timer(sec,min, IsScored);
+        }
+
+        if (!IsScored)
+        {
+            SingeltonManager.Instance.canvasManager.StopNormalGame();
         }
 
       //  SingeltonManager.Instance.canvasManager.RoundEnd(1); // if -0:0
       //  StopAllCoroutines();
     }
 
+   
     public bool WasLastRound()
     {
         if (PlayedRound == SingeltonManager.Instance.team.NumberOfRound)
@@ -152,10 +169,14 @@ public class GameManager : MonoBehaviour
         sec = (int)(Duration - min*60);
     }
 
-    public void GivePhoneToPlayer()
+    public void GivePhoneToPlayer(bool IsScored)
     {
         PlayersKnowThierRoleCount++;
-        SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[PlayersKnowThierRoleCount].name);
+
+        if(IsScored)
+            SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[PlayersKnowThierRoleCount].name);
+        else
+            SingeltonManager.Instance.canvasManager.DeterminePlayerName("next one");
     }
 
    
@@ -213,7 +234,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void NextRound()
+    public void NextRound(bool IsScored)
     {
         CurrentRoundSpyIndex.Clear();
         PlayersKnowThierRoleCount = -1;
@@ -221,7 +242,11 @@ public class GameManager : MonoBehaviour
         min = 0;
         sec = 0;
         word = null;
-        ManageGame();
+
+        if (IsScored)
+            ManageGame();
+        else
+            ManageNormalGame();
     }
 }
 

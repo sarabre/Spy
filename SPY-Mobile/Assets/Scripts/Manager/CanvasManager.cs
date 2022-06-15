@@ -461,9 +461,15 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] Transform PlayerFather; // Content in grid
     [SerializeField] List<GameObject> Players;
 
-    [SerializeField] Dropdown WordGroupList;
+    [SerializeField] Dropdown WordGroupListScored;
+    [SerializeField] Dropdown WordGroupListNormal;
     [SerializeField] Dropdown RoundNumber;
     [SerializeField] Dropdown SpyNumberDp;
+
+    //Normal
+    [SerializeField] Dropdown SpyNumberDpNormalGame;
+    [SerializeField] Dropdown PlayerNumberDpNormalGame;
+    [SerializeField] Dropdown RoundNumberDpNormalGame;
 
     float Time;
     int PossibleSpyNumber;
@@ -473,14 +479,16 @@ public class CanvasManager : MonoBehaviour
     public string JustPublicTableItem;
     public string JustPersonalTableItem;
 
-    [SerializeField] List<GameObject> Timers;
+    [SerializeField] List<GameObject> ScoredTimers;
+    [SerializeField] List<GameObject> NormalTimers;
     [SerializeField] Color ChooseBtnColor;
     [SerializeField] Color ChooseTextColor;
     [SerializeField] Color TextColor;
 
     [SerializeField] RtlText GamePlayText;
     [SerializeField] RtlText GamePlayBtn;
-    [SerializeField] RtlText GamePlayTimer;
+    [SerializeField] RtlText ScoredGamePlayTimer;
+    [SerializeField] RtlText NormalGamePlayTimer;
     [SerializeField] GameObject WinerPlayers;
     [SerializeField] RtlText NumberOfRound;
     [SerializeField] RtlText NextRoundOrEnd;
@@ -495,6 +503,7 @@ public class CanvasManager : MonoBehaviour
     public string ResultOfRound;          //
     public string Results;                //
     public string HomePage;               //
+    public string NextOne;                //
 
     private bool IsLastRound;
     private bool IsIAm = true;
@@ -510,6 +519,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] List<GameObject> RowPlayers = new List<GameObject>();
 
     public Coroutine GamePlayTimerCoroutinr;
+    public Coroutine GamePlayNormalTimerCoroutinr;
 
     public void NewPlayer()
     {
@@ -531,10 +541,19 @@ public class CanvasManager : MonoBehaviour
        
     }
 
-    public void FindAllList()
+        Dropdown WordGroupList;
+    public void FindAllList(bool IsScored)
     {
 
         SortWordGroupList();
+
+        if (IsScored)
+            WordGroupList = WordGroupListScored;
+        else
+            WordGroupList = WordGroupListNormal;
+            
+
+        WordGroupList.options.Clear();
 
         foreach (string item in TableName)
         {
@@ -544,7 +563,7 @@ public class CanvasManager : MonoBehaviour
 
     public void SortWordGroupList()
     {
-        WordGroupList.options.Clear();
+        TableName.Clear();
 
         TableName.Add(AllTableItem);
         TableName.Add(JustPublicTableItem);
@@ -554,20 +573,36 @@ public class CanvasManager : MonoBehaviour
         SingeltonManager.Instance.personalWordsManager.GetAllPersonalTable(ref TableName);
     }
 
-    public void ChooseTime(int index)
+    public void ChooseTime(int index,bool IsScord)
     {
-        //make all black
-        foreach (var item in Timers)
+        if (IsScord)
         {
-            item.GetComponent<Image>().color = Color.white;
-            item.GetComponentInChildren<RtlText>().color = TextColor;
+            //make all black
+            foreach (var item in ScoredTimers)
+            {
+                item.GetComponent<Image>().color = Color.white;
+                item.GetComponentInChildren<RtlText>().color = TextColor;
 
+            }
+            //click 
+            ScoredTimers[index].GetComponent<Image>().color = ChooseBtnColor;
+            ScoredTimers[index].GetComponentInChildren<RtlText>().color = ChooseTextColor;
         }
-        //click 
-        Timers[index].GetComponent<Image>().color = ChooseBtnColor;
-        Timers[index].GetComponentInChildren<RtlText>().color = ChooseTextColor;
-        Time = index * 60 + 120;
+        else
+        {
+            //make all black
+            foreach (var item in NormalTimers)
+            {
+                item.GetComponent<Image>().color = Color.white;
+                item.GetComponentInChildren<RtlText>().color = TextColor;
 
+            }
+            //click 
+            NormalTimers[index].GetComponent<Image>().color = ChooseBtnColor;
+            NormalTimers[index].GetComponentInChildren<RtlText>().color = ChooseTextColor;
+        }
+
+        Time = index * 60 + 120;
     }
 
     public void DetermineSpyNumber()
@@ -602,14 +637,14 @@ public class CanvasManager : MonoBehaviour
             #region send word
 
 
-            if (WordGroupList.value != 0)
-                SingeltonManager.Instance.GameManager.MakeListOfWord(WordGroupList.value);
+            if (WordGroupListScored.value != 0)
+                SingeltonManager.Instance.GameManager.MakeListOfWord(WordGroupListScored.value);
             else
                 SingeltonManager.Instance.GameManager.MakeListOfWord(0);
 
             if (SingeltonManager.Instance.GameManager.Words.Count < Round)
             {
-                ShowAlert(4016); //words count is less than zero
+                ShowAlert(4016); //words count is less than round
                 return;
             }
 
@@ -681,9 +716,83 @@ public class CanvasManager : MonoBehaviour
 
     }
 
+    public void StartNormalGame(string page)
+    {
+        try
+        {
+            #region check player number and spy
+
+            int spynumber = SpyNumberDpNormalGame.value + 1;
+            int playernumber = PlayerNumberDpNormalGame.value + 3;
+
+            if (playernumber< spynumber + 2)
+            {
+                ShowAlert(4018); //player should be 2 + spy or more
+                return;
+            }
+            else
+            {
+                SingeltonManager.Instance.team.NumberOfSpy = spynumber;
+                SingeltonManager.Instance.team.NumberOfPlayer = playernumber;
+            }
+
+            #endregion
+
+            #region send round
+
+            int Round = int.Parse(RoundNumberDpNormalGame.options[RoundNumberDpNormalGame.value].text);
+            if (Round == 0)
+            {
+                ShowAlert(4014);
+                return;
+            }
+            else
+                SingeltonManager.Instance.team.NumberOfRound = Round;
+
+            #endregion
+
+            #region send word
+            if (WordGroupListNormal.value != 0)
+                SingeltonManager.Instance.GameManager.MakeListOfWord(WordGroupListNormal.value);
+            else
+                SingeltonManager.Instance.GameManager.MakeListOfWord(0);
+
+            if (SingeltonManager.Instance.GameManager.Words.Count < Round)
+            {
+                ShowAlert(4016); //words count is less than round
+                return;
+            }
+            #endregion
+
+            #region send time
+
+            if (Time == 0)
+            {
+                ShowAlert(4013); // choose time
+                return;
+            }
+            else
+                SingeltonManager.Instance.team.RoundDuration = Time;
+            #endregion
+
+
+            SingeltonManager.Instance.GameManager.ManageNormalGame();
+
+            GotoPage(page);
+
+        }
+        catch
+        {
+            ShowAlert(4015); //rong information
+        }
+    }
     public void DeterminePlayerName(string name)
     {
+        if(name == "next one")
+        GamePlayText.text = $"{GivePhoneTo} {NextOne} {GivePhone}.";
+        else
         GamePlayText.text = $"{GivePhoneTo} {name} {GivePhone}.";
+
         GamePlayBtn.text = Iam;
     }
 
@@ -705,25 +814,31 @@ public class CanvasManager : MonoBehaviour
 
         this.IsLastPlayer = IsLastPlayer;
     }
-    public void NextStepInGamePlay(string page) //Next Btn
+    public void NextStepInGamePlay(string page,bool IsScored) //Next Btn
     {
         if(IsLastPlayer)
         {
             GotoPage(page);
-            GamePlayTimerCoroutinr = StartCoroutine(SingeltonManager.Instance.GameManager.ManagingTime());
+            if(IsScored)
+                GamePlayTimerCoroutinr = StartCoroutine(SingeltonManager.Instance.GameManager.ManagingTime(true));
+            else
+                GamePlayNormalTimerCoroutinr = StartCoroutine(SingeltonManager.Instance.GameManager.ManagingTime(false));
             return;
         }
 
         if(IsIAm)
             SingeltonManager.Instance.GameManager.ImInGamePlay();
         else
-            SingeltonManager.Instance.GameManager.GivePhoneToPlayer();
+            SingeltonManager.Instance.GameManager.GivePhoneToPlayer(IsScored);
         IsIAm = !IsIAm;
     }
 
-    public void Timer(int min,int second)
+    public void Timer(int min,int second,bool IsScored)
     {
-        GamePlayTimer.text = $"{min.ToString()} : {second.ToString()}";
+        if(IsScored)
+            ScoredGamePlayTimer.text = $"{min.ToString()} : {second.ToString()}";
+        else
+            NormalGamePlayTimer.text = $"{min.ToString()} : {second.ToString()}";
  
     }
 
@@ -794,11 +909,11 @@ public class CanvasManager : MonoBehaviour
        
     }
 
-    public void NextRound(string page)
+    public void NextRound(string page,bool IsScored)
     {
         if (!IsLastRound)
         {
-            SingeltonManager.Instance.GameManager.NextRound();
+            SingeltonManager.Instance.GameManager.NextRound(IsScored);
             IsLastPlayer = false;
             IsIAm = !IsIAm;
             GotoPage(page);
@@ -809,6 +924,11 @@ public class CanvasManager : MonoBehaviour
             SceneManager.LoadScene(scene.name);
         }
 
+    }
+
+    public void StopNormalGame()
+    {
+        StopCoroutine(GamePlayNormalTimerCoroutinr);
     }
 
     #endregion
