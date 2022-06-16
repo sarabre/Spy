@@ -176,7 +176,6 @@ public class CanvasManager : MonoBehaviour
    
     void ResetScroolSize(int index,RectTransform ScrollContent,bool IsList,bool IsPublic)
     {
-        Debug.Log("IsPublic  = " + IsPublic);
         if(!IsPublic)
             ScrollContent.sizeDelta = new Vector2(0, CalculateContentHeightPersonal(index,IsList, Convert.ToInt32(SingeltonManager.Instance.personalWordsManager.wordlist.Count / 2), MinHeightScrollPersonalBtn, ContentPersonaBtnGrid.cellSize.y, SingeltonManager.Instance.personalWordsManager.wordlist[index].Words.Count, MinHeightScrollPersonalWord, ContentPersonalwordGrid.cellSize.y));
         else

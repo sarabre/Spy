@@ -12,6 +12,9 @@ public class PublicWordsManager : MonoBehaviour
     public TableDetail tableDetail = new TableDetail();
     public Table table = new Table();
 
+    public List<SuggestedIndex> CountOfSuggestion = new List<SuggestedIndex>();
+    public SuggestedIndex suggestedIndex = new SuggestedIndex();
+
     private List<TableDetail> TableNamesFromDatabase
     {
         get
@@ -91,13 +94,39 @@ public class PublicWordsManager : MonoBehaviour
         }
     }
 
+    public int x;
+
+    public bool CanFind(string WordCode)
+    {
+        foreach (var item in CountOfSuggestion)
+        {
+            if (item.TableID == Convert.ToInt32((GetCodeOfTable(WordCode))))
+            {
+                item.Count++;
+                x = item.Count;
+                return true;
+            }
+        }
+        return false;
+    }
     public int GetNewWordIndex(string WordCode) // new
     {
+
+        if(!CanFind(WordCode))
+        {
+            suggestedIndex = new SuggestedIndex();
+            suggestedIndex.TableID = Convert.ToInt32((GetCodeOfTable(WordCode)));
+            suggestedIndex.Count = 1;
+            CountOfSuggestion.Add(suggestedIndex);
+            x = 1;
+        }
+
+
         for (int i = 0; i < Tables.Count; i++)
         {
             if(Tables[i].TableNameCode.Contains( WordCode))
             {
-                return (Convert.ToInt32((GetCodeOfTable(WordCode)*100)) + Tables[i].Word.Count); //50000 * 100 + 1 * 100 + 05 = 5000105
+                return (Convert.ToInt32((GetCodeOfTable(WordCode)*100)) + (Tables[i].Word.Count+x)); //50001 * 100 * 100 + 05 = 5000105
             }
         }
         return 0;
@@ -186,3 +215,9 @@ public class SuggestedWord
     public int WgCode; //5000101
 }
 
+[Serializable]
+public class SuggestedIndex
+{
+    public int TableID;
+    public int Count;
+}
