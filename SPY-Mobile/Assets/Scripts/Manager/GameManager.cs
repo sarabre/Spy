@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 
     public List<int> CurrentRoundSpyIndex = new List<int>();
 
-    int PlayersKnowThierRoleCount = -1;
+    [SerializeField] int PlayersKnowThierRoleCount = -1;
     bool IsSpy;
     string word;
     bool IsLastPlayer;
@@ -174,14 +174,14 @@ public class GameManager : MonoBehaviour
         PlayersKnowThierRoleCount++;
 
         if(IsScored)
-            SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[PlayersKnowThierRoleCount].name);
+            SingeltonManager.Instance.canvasManager.DeterminePlayerName(SingeltonManager.Instance.team.players[PlayersKnowThierRoleCount].name,false);
         else
-            SingeltonManager.Instance.canvasManager.DeterminePlayerName("next one");
+            SingeltonManager.Instance.canvasManager.DeterminePlayerName("",true);
     }
 
    
 
-    public void ImInGamePlay() // I am Btn
+    public void ImInGamePlay(bool IsScored) // I am Btn
     {
         
         foreach (var item in CurrentRoundSpyIndex)
@@ -200,8 +200,16 @@ public class GameManager : MonoBehaviour
         if(word == null)
         word = ThisRoundWord();
 
-        if (PlayersKnowThierRoleCount == SingeltonManager.Instance.team.players.Count-1)
-            IsLastPlayer = true;
+        if (IsScored)
+        {
+            if (PlayersKnowThierRoleCount == SingeltonManager.Instance.team.players.Count - 1)
+                IsLastPlayer = true;
+        }
+        else
+        {
+            if (PlayersKnowThierRoleCount == SingeltonManager.Instance.team.NumberOfPlayer - 1)
+                IsLastPlayer = true;
+        }
 
         SingeltonManager.Instance.canvasManager.ShowPlayerRole(IsSpy,word ,IsLastPlayer);
 

@@ -488,10 +488,14 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] RtlText GamePlayText;
     [SerializeField] RtlText GamePlayBtn;
     [SerializeField] RtlText ScoredGamePlayTimer;
-    [SerializeField] RtlText NormalGamePlayTimer;
     [SerializeField] GameObject WinerPlayers;
     [SerializeField] RtlText NumberOfRound;
     [SerializeField] RtlText NextRoundOrEnd;
+
+    [SerializeField] RtlText NormalGamePlayBtn;
+    [SerializeField] RtlText NormalGamePlayTimer;
+    [SerializeField] RtlText NormalGamePlayText;
+    [SerializeField] RtlText NextRoundOrEndNormal;
 
     public string GivePhone;              //
     public string GivePhoneTo;            //
@@ -786,14 +790,19 @@ public class CanvasManager : MonoBehaviour
             ShowAlert(4015); //rong information
         }
     }
-    public void DeterminePlayerName(string name)
+    public void DeterminePlayerName(string name,bool IsNormal)
     {
-        if(name == "next one")
-        GamePlayText.text = $"{GivePhoneTo} {NextOne} {GivePhone}.";
+        Debug.Log("1 ===>" + name);
+
+        if(IsNormal)
+        NormalGamePlayText.text = $"{GivePhoneTo} {NextOne} {GivePhone}.";
         else
         GamePlayText.text = $"{GivePhoneTo} {name} {GivePhone}.";
 
+        Debug.Log("1 ===>" + GamePlayText.text);
+
         GamePlayBtn.text = Iam;
+        NormalGamePlayBtn.text = Iam;
     }
 
     public void ShowPlayerRole(bool IsSpy , string word,bool IsLastPlayer)
@@ -801,22 +810,41 @@ public class CanvasManager : MonoBehaviour
         if (IsSpy)
         {
             GamePlayText.text = $"{Spy}";
+            NormalGamePlayText.text = $"{Spy}";
         }
         else
         {
             GamePlayText.text = $"{word}";
+            NormalGamePlayText.text = $"{word}";
         }
 
-        if(!IsLastPlayer)
+        if (!IsLastPlayer)
+        {
             GamePlayBtn.text = Next;
+            NormalGamePlayBtn.text = Next;
+        }
         else
+        {
+            Debug.Log("here");
             GamePlayBtn.text = Start;
+            NormalGamePlayBtn.text = Start;
+        }
 
         this.IsLastPlayer = IsLastPlayer;
     }
     public void NextStepInGamePlay(string page,bool IsScored) //Next Btn
     {
-        if(IsLastPlayer)
+        if (!IsScored)
+        {
+            if (SingeltonManager.Instance.GameManager.WasLastRound())
+            {
+                NextRoundOrEndNormal.text = HomePage;
+                IsLastRound = true;
+            }
+        }
+       
+
+        if (IsLastPlayer)
         {
             GotoPage(page);
             if(IsScored)
@@ -827,7 +855,7 @@ public class CanvasManager : MonoBehaviour
         }
 
         if(IsIAm)
-            SingeltonManager.Instance.GameManager.ImInGamePlay();
+            SingeltonManager.Instance.GameManager.ImInGamePlay(IsScored);
         else
             SingeltonManager.Instance.GameManager.GivePhoneToPlayer(IsScored);
         IsIAm = !IsIAm;
@@ -929,6 +957,8 @@ public class CanvasManager : MonoBehaviour
     public void StopNormalGame()
     {
         StopCoroutine(GamePlayNormalTimerCoroutinr);
+       
+
     }
 
     #endregion
